@@ -1,0 +1,38 @@
+# TEK AÇILI EKRAN (HOLOGRAM) KURULUM PLANI
+
+Bu doküman, "Sihirli El" destekli 3 boyutlu şekillerin sınıf ortamında hantal bir piramide ihtiyaç duyulmadan, katlanabilir ve taşınabilir bir **Holobox (Tek Açılı Ekran)** ile öğrencilere yansıtılması için hazırlanmış donanım ve kurulum senaryosudur.
+
+## 1. Gerekli Donanımlar ve Malzemeler
+
+*   **Kontrol Merkezi (Öğretmen Masası):**
+    *   Huawei MatePad 12X Tablet (Ön kamerası ile öğretmeni görecek şekilde standında dik durmalıdır).
+*   **Hologram Motoru (Öğrenci Sırası):**
+    *   Sınıfın ortasındaki bir sıraya yatay (sırt üstü) olarak yatırılabilecek standart bir bilgisayar monitörü (Örn: 24 veya 27 inç) veya ekranı klavyesiyle aynı hizaya kadar (180 derece) açılabilen büyük bir dizüstü bilgisayar.
+*   **Yansıtıcı Levha (Optik Ayna):**
+    *   Monitör ekranının boyutlarına uygun kesilmiş tek parça şeffaf pleksiglas (akrilik) veya ince cam levha. (Asetattan daha sert olması titremeyi ve bükülmeyi önler).
+*   **Destek Elemanları (Opsiyonel):**
+    *   Levhayı monitör üzerinde 45 derece açıyla tutabilmek için 3D yazıcıdan basılmış basit iki adet üçgen takoz veya karton destek ayağı.
+    *   Görüntünün kontrastını (parlaklığını) artırmak için levhanın arka tarafına (öğrencilerin tam karşısına) denk gelecek siyah bir fon kartonu veya siyah kumaş (Bu arka plan ortam ışığını emer ve hologramın çok daha parlak görünmesini sağlar).
+
+## 2. Fiziksel Kurulum Adımları
+
+1.  **Monitörü Hazırlayın:** Hologram motoru olacak monitörü veya bilgisayarı sınıfın ortasındaki sıraya, ekranı tavana (yukarı) bakacak şekilde tam yatay olarak yerleştirin.
+2.  **Açıyı Ayarlayın:** Şeffaf pleksiglas levhayı, monitörün alt kenarına (öğrencilere yakın olan kenarına) dayayın ve tıpkı yarı açık bir dizüstü bilgisayar kapağı gibi **45 derecelik bir açıyla** geriye doğru yaslayın.
+3.  **Karanlık Arka Plan:** Levhanın gerisine siyah kartonu dik bir şekilde yerleştirin. Öğrenciler karşıdan baktıklarında, şeffaf camın arkasında siyah bir boşluk görmelidir.
+
+## 3. Yazılım ve Senkronizasyon Senaryosu
+
+1.  **Öğretmen Kontrolü:** Huawei tabletinizde uygulamayı açın, "Sihirli El"i aktif edin ve "Oda Kodu" oluşturun.
+2.  **Hologramın Bağlanması:** Sıranın üzerindeki monitöre bağlı olan bilgisayarda internet tarayıcısını açıp uygulamanıza girin. Tabletin ürettiği "Oda Kodu" ile sisteme "İzleyici (Viewer)" olarak bağlanın.
+3.  **Hologram Modunun Aktif Edilmesi:** İzleyici ekranda eklenecek olan özel **"Hologram Modu"** butonuna basılır. Bu mod aktif olduğunda:
+    *   Ekrandaki tüm butonlar, menüler ve araç çubukları yok olur.
+    *   Ekran arkaplanı zifiri siyah (#000000) rengine bürünür.
+    *   3 Boyutlu şekil, ekrana ters (mirrored) şekilde yansıtılır (Camdan yansıdığında öğrencilere düz görünmesi için).
+4.  **Sihir Başlıyor:** Öğretmen masasında ellerini hareket ettirdiği milisaniye, tahtadaki monitörde yatan şekil kendi ekseninde döner, büyür ve açınım yapar. 45 derecelik pleksiglas camdan yansıyan bu ışık, siyah fon sayesinde camı görünmez kılar ve şekil sınıfın tam ortasında, havada asılı duran muazzam bir hologram olarak belirir.
+
+## 4. Taşınabilirlik (Avantajı)
+
+Ders bittiğinde, 45 derece açıyla duran pleksiglas levha monitörün üzerine dümdüz kapatılır (kitap gibi). Piramitler gibi hantal bir yer kaplamaz, kolayca dosya gibi saklanabilir veya taşınabilir.
+
+---
+*Not: Bu senaryo onaylandığında, yazılımdaki "Hologram Modu (Siyah Ekran & Ayna Etkisi)" geliştirmesi tarafımdan hızla sisteme entegre edilecektir. - Tony Stark AI*

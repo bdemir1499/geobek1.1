@@ -1,0 +1,10 @@
+﻿
+node_modules/
+*.log
+
+# Ignore original source code and dependencies
+src/
+node_modules/
+package.json
+package-lock.json
+build.js
