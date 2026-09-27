@@ -355,13 +355,75 @@ document.addEventListener('DOMContentLoaded', () => {
             sourceCanvas.getContext('2d').drawImage(bgCanvas, finalSx, finalSy, finalSw, finalSh, 0, 0, finalSw, finalSh);
             sourceCanvas.getContext('2d').drawImage(canvasElm, finalSx, finalSy, finalSw, finalSh, 0, 0, finalSw, finalSh);
 
-            // Sihirli 3D döndürme 2D resimlerde imkansız olduğundan doğrudan orijinal perspektifle dilimliyoruz
-            const dilimStr = prompt("Kesirler için Kaç Dilim Olacak?", "4");
-            if (!dilimStr) return;
-            const dilimSayisi = parseInt(dilimStr, 10);
-            if (!isNaN(dilimSayisi) && dilimSayisi >= 2 && dilimSayisi <= 100) {
-                addCoverStroke(); // Sormadan eklemiyoruz ki iptal edilirse silmekle uğraşmayalım
-                performSlicing(dilimSayisi, finalSw, finalSh, sourceCanvas);
+            if (is3D) {
+                addCoverStroke(); // Eski pastayı gizle (Akıllı örtü ile boşluğu boyar)
+
+                // 1. Pastanın sadece ÜST yüzeyini (Oval kısmını) tahmin edip kopyalıyoruz
+                const topRadiusX = finalSw / 2;
+                const topRadiusY = finalSw * 0.25; // 3D izometrik çizimlerde standart üst yüzey basıklığı
+                
+                const topCanvas = document.createElement('canvas');
+                topCanvas.width = finalSw;
+                topCanvas.height = topRadiusY * 2;
+                const topCtx = topCanvas.getContext('2d');
+                
+                topCtx.beginPath();
+                topCtx.ellipse(topRadiusX, topRadiusY, topRadiusX, topRadiusY, 0, 0, Math.PI * 2);
+                topCtx.clip();
+                topCtx.drawImage(sourceCanvas, 0, 0, finalSw, finalSh, 0, 0, finalSw, finalSh);
+
+                // 2. Animasyon için ekrana geçici resmi ekle
+                const animImg = document.createElement('img');
+                animImg.src = topCanvas.toDataURL();
+                animImg.style.position = 'absolute';
+                animImg.style.left = finalScreenLeft + 'px';
+                animImg.style.top = finalScreenTop + 'px';
+                animImg.style.width = finalScreenW + 'px';
+                animImg.style.height = (finalScreenH * (topRadiusY * 2 / finalSh)) + 'px';
+                animImg.style.zIndex = '10000';
+                animImg.style.transition = 'all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1)';
+                animImg.style.transformOrigin = 'bottom center';
+                document.body.appendChild(animImg);
+
+                // 3. Kesme işlemi için matematiksel olarak dikleştirilmiş (Kusursuz Daire) halini oluştur
+                const targetSize = finalSw; // Genişlik kadar yükseklik (Tam Daire)
+                const flatCanvas = document.createElement('canvas');
+                flatCanvas.width = targetSize;
+                flatCanvas.height = targetSize;
+                const fCtx = flatCanvas.getContext('2d');
+                fCtx.scale(1, targetSize / (topRadiusY * 2)); // Dikey olarak uzatıp tam daire yap
+                fCtx.drawImage(topCanvas, 0, 0);
+
+                // CSS Animasyonunu tetikle (Öne yatırıp tam daireye çevir)
+                setTimeout(() => {
+                    animImg.style.transform = `scaleY(${targetSize / (topRadiusY * 2)})`;
+                }, 50);
+
+                // Animasyon bitince sor ve kes
+                setTimeout(() => {
+                    const dilimStr = prompt("Kesirler için Kaç Dilim Olacak?", "4");
+                    if (!dilimStr) {
+                        animImg.remove();
+                        if (window.drawnStrokes) window.drawnStrokes.pop(); // Cover'ı geri al
+                        if (typeof window.redrawAllStrokes === 'function') window.redrawAllStrokes();
+                        return;
+                    }
+                    const dilimSayisi = parseInt(dilimStr, 10);
+                    if (!isNaN(dilimSayisi) && dilimSayisi >= 2 && dilimSayisi <= 100) {
+                        performSlicing(dilimSayisi, targetSize, targetSize, flatCanvas);
+                    }
+                    animImg.remove();
+                }, 650);
+
+            } else {
+                // 2D Normal Kesme (Madeni para veya Çubuk)
+                const dilimStr = prompt("Kesirler için Kaç Dilim Olacak?", "4");
+                if (!dilimStr) return;
+                const dilimSayisi = parseInt(dilimStr, 10);
+                if (!isNaN(dilimSayisi) && dilimSayisi >= 2 && dilimSayisi <= 100) {
+                    addCoverStroke(); // Sormadan eklemiyoruz ki iptal edilirse silmekle uğraşmayalım
+                    performSlicing(dilimSayisi, finalSw, finalSh, sourceCanvas);
+                }
             }
         });
     }
