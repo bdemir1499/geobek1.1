@@ -260,11 +260,39 @@ document.addEventListener('DOMContentLoaded', () => {
                     const offsetX = Math.cos(midAngle) * 15; // 15px dışa doğru it
                     const offsetY = Math.sin(midAngle) * 15;
                     
-                    imgDataUrl = tempCanvas.toDataURL('image/png');
-                    strokeW = finalScreenW;
-                    strokeH = finalScreenH;
-                    strokeX = finalScreenLeft + offsetX;
-                    strokeY = finalScreenTop + offsetY;
+                    // KESİN KIRPMA (Dilimlerin üst üste binip seçimleri engellememesi için şeffaf alanları at)
+                    const sliceImgData = ctx.getImageData(0, 0, tempCanvas.width, tempCanvas.height).data;
+                    let sMinX = tempCanvas.width, sMinY = tempCanvas.height, sMaxX = 0, sMaxY = 0;
+                    let sFound = false;
+                    for (let y = 0; y < tempCanvas.height; y++) {
+                        for (let x = 0; x < tempCanvas.width; x++) {
+                            const idx = (y * tempCanvas.width + x) * 4;
+                            if (sliceImgData[idx+3] > 0) {
+                                if (x < sMinX) sMinX = x;
+                                if (x > sMaxX) sMaxX = x;
+                                if (y < sMinY) sMinY = y;
+                                if (y > sMaxY) sMaxY = y;
+                                sFound = true;
+                            }
+                        }
+                    }
+
+                    if (sFound && sMaxX > sMinX && sMaxY > sMinY) {
+                        const croppedW = sMaxX - sMinX;
+                        const croppedH = sMaxY - sMinY;
+                        const croppedCanvas = document.createElement('canvas');
+                        croppedCanvas.width = croppedW;
+                        croppedCanvas.height = croppedH;
+                        croppedCanvas.getContext('2d').drawImage(tempCanvas, sMinX, sMinY, croppedW, croppedH, 0, 0, croppedW, croppedH);
+                        
+                        imgDataUrl = croppedCanvas.toDataURL('image/png');
+                        strokeW = croppedW / scaleX;
+                        strokeH = croppedH / scaleY;
+                        strokeX = finalScreenLeft + (sMinX / scaleX) + offsetX;
+                        strokeY = finalScreenTop + (sMinY / scaleY) + offsetY;
+                    } else {
+                        continue; // Boş alan atla
+                    }
 
                 } else {
                     // --- DİKDÖRTGEN (BAR) KESİR DİLİMLEME ---
