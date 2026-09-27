@@ -168,11 +168,63 @@ document.addEventListener('DOMContentLoaded', () => {
                 finalScreenH = finalSh / scaleY;
             }
 
+            // ARKA PLAN RENGİNİ BULMA (Akıllı Boyama için çerçeveden 5px dışarıya bak)
+            // Çerçevenin 5px sol-orta dışındaki pikseli referans alalım (eğer dışarı çıkmıyorsa 0)
+            const sampleX = Math.max(0, finalSx - 5);
+            const sampleY = Math.max(0, finalSy + (finalSh / 2));
+            const ctxRef = bgCanvas.getContext('2d');
+            let bgStyle = '#ffffff'; // default
+            try {
+                const px = ctxRef.getImageData(sampleX, sampleY, 1, 1).data;
+                // Şeffaf değilse rengi al, şeffafsa sayfada body rengi veya beyaz varsay
+                if (px[3] > 0) {
+                    bgStyle = `rgba(${px[0]}, ${px[1]}, ${px[2]}, ${px[3]/255})`;
+                } else {
+                    bgStyle = document.body.style.backgroundColor || '#ffffff';
+                }
+            } catch(e) {}
+
             // DİKDÖRTGEN Mİ PASTA MI? (Oran %15'e kadar yakınsa Kare/Daire kabul et ve Pasta (Pie) dilimle, yoksa Yatay Kesir (Bar) dilimle)
             const aspectDiff = Math.abs(finalSw - finalSh) / Math.max(finalSw, finalSh);
             const isPieSlicing = aspectDiff < 0.15;
 
-            // Her bir dilimi üret ve ekrana ekle
+            // 1. ÖNCE "BOŞLUK ÖRTÜSÜNÜ" (MASK) EKLE (Orijinal çizimi gizlemek için akıllı boyama)
+            const coverCanvas = document.createElement('canvas');
+            coverCanvas.width = finalSw;
+            coverCanvas.height = finalSh;
+            const coverCtx = coverCanvas.getContext('2d');
+            coverCtx.fillStyle = bgStyle;
+            
+            if (isPieSlicing) {
+                coverCtx.beginPath();
+                coverCtx.arc(finalSw/2, finalSh/2, Math.max(finalSw, finalSh)/2 + 2, 0, Math.PI * 2);
+                coverCtx.fill();
+            } else {
+                coverCtx.fillRect(0, 0, finalSw, finalSh);
+            }
+            
+            const coverImg = new Image();
+            coverImg.onload = () => {
+                const coverStroke = {
+                    type: 'image',
+                    imgData: coverCanvas.toDataURL('image/png'),
+                    x: finalScreenLeft,
+                    y: finalScreenTop,
+                    width: finalScreenW,
+                    height: finalScreenH,
+                    rotation: 0,
+                    isBackground: false,
+                    imgObj: coverImg,
+                    id: Date.now() + Math.random() + "_cover"
+                };
+                if (window.drawnStrokes) window.drawnStrokes.push(coverStroke);
+                if (typeof window.sendNetworkData === 'function') {
+                    window.sendNetworkData({ type: 'yeni_cizim', stroke: { ...coverStroke, imgObj: null } });
+                }
+            };
+            coverImg.src = coverCanvas.toDataURL('image/png');
+
+            // 2. Her bir dilimi üret ve ekrana ekle (COVER'ın üstüne binecekler)
             for (let i = 0; i < dilimSayisi; i++) {
                 const tempCanvas = document.createElement('canvas');
                 let imgDataUrl;
