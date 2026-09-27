@@ -196,8 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (isPieSlicing) {
                 coverCtx.beginPath();
-                const coverRadius = Math.sqrt((finalSw/2)**2 + (finalSh/2)**2) + 2;
-                coverCtx.arc(finalSw/2, finalSh/2, coverRadius, 0, Math.PI * 2);
+                coverCtx.ellipse(finalSw/2, finalSh/2, (finalSw/2) + 2, (finalSh/2) + 2, 0, 0, Math.PI * 2);
                 coverCtx.fill();
             } else {
                 coverCtx.fillRect(0, 0, finalSw, finalSh);
@@ -238,7 +237,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     const centerX = finalSw / 2;
                     const centerY = finalSh / 2;
-                    const radius = Math.sqrt(centerX*centerX + centerY*centerY) + 2;
                     
                     // Açı hesaplamaları (Saat 12 yönünden başla)
                     const startAngle = (i * 2 * Math.PI) / dilimSayisi - (Math.PI / 2);
@@ -247,9 +245,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     ctx.save();
                     ctx.beginPath();
                     ctx.moveTo(centerX, centerY);
-                    ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                    ctx.ellipse(centerX, centerY, (finalSw/2) + 2, (finalSh/2) + 2, 0, startAngle, endAngle);
                     ctx.closePath();
-                    ctx.clip(); // Sadece bu üçgenimsi alanı göster
+                    ctx.clip(); // Sadece bu dilimlik alanı göster
                     
                     ctx.drawImage(bgCanvas, finalSx, finalSy, finalSw, finalSh, 0, 0, finalSw, finalSh);
                     ctx.drawImage(canvasElm, finalSx, finalSy, finalSw, finalSh, 0, 0, finalSw, finalSh);
@@ -260,13 +258,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     const offsetX = Math.cos(midAngle) * 15; // 15px dışa doğru it
                     const offsetY = Math.sin(midAngle) * 15;
                     
-                    // KESİN KIRPMA (Dilimlerin üst üste binip seçimleri engellememesi için şeffaf alanları at)
-                    const sliceImgData = ctx.getImageData(0, 0, tempCanvas.width, tempCanvas.height).data;
+                    // KESİN KIRPMA (Dilimlerin üst üste binip seçimleri engellememesi için şeffaf alanları ve ARKA PLANI at)
+                    const sliceImgDataObj = ctx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+                    const sliceImgData = sliceImgDataObj.data;
                     let sMinX = tempCanvas.width, sMinY = tempCanvas.height, sMaxX = 0, sMaxY = 0;
                     let sFound = false;
                     for (let y = 0; y < tempCanvas.height; y++) {
                         for (let x = 0; x < tempCanvas.width; x++) {
                             const idx = (y * tempCanvas.width + x) * 4;
+                            
+                            // Arkaplan rengiyle eşleşiyorsa (tolerans: 25) şeffaf yap (Chroma Key Effect)
+                            if (sliceImgData[idx+3] > 0) {
+                                const isBg = Math.abs(sliceImgData[idx]-bgR) <= 25 && 
+                                             Math.abs(sliceImgData[idx+1]-bgG) <= 25 && 
+                                             Math.abs(sliceImgData[idx+2]-bgB) <= 25;
+                                if (isBg) {
+                                    sliceImgData[idx+3] = 0; // Şeffaf yap
+                                }
+                            }
+
+                            // Kalan görünür piksellere göre bounding box belirle
                             if (sliceImgData[idx+3] > 0) {
                                 if (x < sMinX) sMinX = x;
                                 if (x > sMaxX) sMaxX = x;
@@ -276,6 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
                         }
                     }
+                    ctx.putImageData(sliceImgDataObj, 0, 0); // Şeffaflaştırılmış hali geri yaz
 
                     if (sFound && sMaxX > sMinX && sMaxY > sMinY) {
                         const croppedW = sMaxX - sMinX;
