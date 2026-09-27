@@ -90,14 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (rect.width < 30 || rect.height < 30) return; // Çok küçükse iptal (yanlış tıklama)
 
-            const dilimStr = prompt("Kesirler için Kaç Dilim Olacak?", "4");
-            if (!dilimStr) return;
-            const dilimSayisi = parseInt(dilimStr, 10);
-            if (isNaN(dilimSayisi) || dilimSayisi < 2 || dilimSayisi > 100) {
-                alert("Lütfen 2 ile 100 arasında geçerli bir sayı girin.");
-                return;
-            }
-
             const canvasElm = document.getElementById('drawing-canvas');
             const bgCanvas = document.getElementById('bg-canvas');
             if (!canvasElm || !bgCanvas) return;
@@ -169,14 +161,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // ARKA PLAN RENGİNİ BULMA (Akıllı Boyama için çerçeveden 5px dışarıya bak)
-            // Çerçevenin 5px sol-orta dışındaki pikseli referans alalım (eğer dışarı çıkmıyorsa 0)
             const sampleX = Math.max(0, finalSx - 5);
             const sampleY = Math.max(0, finalSy + (finalSh / 2));
             const ctxRef = bgCanvas.getContext('2d');
             let bgStyle = '#ffffff'; // default
             try {
                 const px = ctxRef.getImageData(sampleX, sampleY, 1, 1).data;
-                // Şeffaf değilse rengi al, şeffafsa sayfada body rengi veya beyaz varsay
                 if (px[3] > 0) {
                     bgStyle = `rgba(${px[0]}, ${px[1]}, ${px[2]}, ${px[3]/255})`;
                 } else {
@@ -187,176 +177,241 @@ document.addEventListener('DOMContentLoaded', () => {
             // KULLANICIYA SOR: Nasıl dilimlensin?
             const isPieSlicing = confirm("Şekil yuvarlak (Pasta/Pizza) gibi merkezden mi dilimlensin?\n\n- [Tamam]'a basarsanız: Pasta Dilimi\n- [İptal]'e basarsanız: Dikey Çubuk Dilimi (Dikdörtgen)");
 
-            // 1. ÖNCE "BOŞLUK ÖRTÜSÜNÜ" (MASK) EKLE (Orijinal çizimi gizlemek için akıllı boyama)
-            const coverCanvas = document.createElement('canvas');
-            coverCanvas.width = finalSw;
-            coverCanvas.height = finalSh;
-            const coverCtx = coverCanvas.getContext('2d');
-            coverCtx.fillStyle = bgStyle;
-            
-            if (isPieSlicing) {
-                coverCtx.beginPath();
-                coverCtx.ellipse(finalSw/2, finalSh/2, (finalSw/2) + 2, (finalSh/2) + 2, 0, 0, Math.PI * 2);
-                coverCtx.fill();
-            } else {
-                coverCtx.fillRect(0, 0, finalSw, finalSh);
-            }
-            
-            const coverImg = new Image();
-            coverImg.onload = () => {
-                const coverStroke = {
-                    type: 'image',
-                    imgData: coverCanvas.toDataURL('image/png'),
-                    x: finalScreenLeft,
-                    y: finalScreenTop,
-                    width: finalScreenW,
-                    height: finalScreenH,
-                    rotation: 0,
-                    isBackground: false,
-                    imgObj: coverImg,
-                    id: Date.now() + Math.random() + "_cover"
-                };
-                if (window.drawnStrokes) window.drawnStrokes.push(coverStroke);
-                if (typeof window.sendNetworkData === 'function') {
-                    window.sendNetworkData({ type: 'yeni_cizim', stroke: { ...coverStroke, imgObj: null } });
-                }
-            };
-            coverImg.src = coverCanvas.toDataURL('image/png');
+            // 3D AKILLI ALGILAMA (Pasta seçildiyse ve şekil basıksa)
+            const aspectRatio = Math.max(finalSw, finalSh) / Math.min(finalSw, finalSh);
+            const is3D = isPieSlicing && (aspectRatio > 1.15); // Genişlik/Yükseklik farkı %15'ten fazlaysa 3D kabul et
 
-            // 2. Her bir dilimi üret ve ekrana ekle (COVER'ın üstüne binecekler)
-            for (let i = 0; i < dilimSayisi; i++) {
-                const tempCanvas = document.createElement('canvas');
-                let imgDataUrl;
-                let strokeW, strokeH, strokeX, strokeY;
-
+            // "Boşluk Örtüsü" oluşturucu
+            const addCoverStroke = () => {
+                const coverCanvas = document.createElement('canvas');
+                coverCanvas.width = finalSw;
+                coverCanvas.height = finalSh;
+                const coverCtx = coverCanvas.getContext('2d');
+                coverCtx.fillStyle = bgStyle;
                 if (isPieSlicing) {
-                    // --- PASTA DİLİMİ (PIE SLICING) ---
-                    tempCanvas.width = finalSw;
-                    tempCanvas.height = finalSh;
-                    const ctx = tempCanvas.getContext('2d');
-                    
-                    const centerX = finalSw / 2;
-                    const centerY = finalSh / 2;
-                    
-                    // Açı hesaplamaları (Saat 12 yönünden başla)
-                    const startAngle = (i * 2 * Math.PI) / dilimSayisi - (Math.PI / 2);
-                    const endAngle = ((i + 1) * 2 * Math.PI) / dilimSayisi - (Math.PI / 2);
-                    
-                    ctx.save();
-                    ctx.beginPath();
-                    ctx.moveTo(centerX, centerY);
-                    ctx.ellipse(centerX, centerY, (finalSw/2) + 2, (finalSh/2) + 2, 0, startAngle, endAngle);
-                    ctx.closePath();
-                    ctx.clip(); // Sadece bu dilimlik alanı göster
-                    
-                    ctx.drawImage(bgCanvas, finalSx, finalSy, finalSw, finalSh, 0, 0, finalSw, finalSh);
-                    ctx.drawImage(canvasElm, finalSx, finalSy, finalSw, finalSh, 0, 0, finalSw, finalSh);
-                    ctx.restore();
-                    
-                    // Görsel olarak dilimlerin ayrıldığını belli etmek için hafif offset
-                    const midAngle = (startAngle + endAngle) / 2;
-                    const offsetX = Math.cos(midAngle) * 15; // 15px dışa doğru it
-                    const offsetY = Math.sin(midAngle) * 15;
-                    
-                    // KESİN KIRPMA (Dilimlerin üst üste binip seçimleri engellememesi için şeffaf alanları ve ARKA PLANI at)
-                    const sliceImgDataObj = ctx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-                    const sliceImgData = sliceImgDataObj.data;
-                    let sMinX = tempCanvas.width, sMinY = tempCanvas.height, sMaxX = 0, sMaxY = 0;
-                    let sFound = false;
-                    for (let y = 0; y < tempCanvas.height; y++) {
-                        for (let x = 0; x < tempCanvas.width; x++) {
-                            const idx = (y * tempCanvas.width + x) * 4;
-                            
-                            // Arkaplan rengiyle eşleşiyorsa (tolerans: 25) şeffaf yap (Chroma Key Effect)
-                            if (sliceImgData[idx+3] > 0) {
-                                const isBg = Math.abs(sliceImgData[idx]-bgR) <= 25 && 
-                                             Math.abs(sliceImgData[idx+1]-bgG) <= 25 && 
-                                             Math.abs(sliceImgData[idx+2]-bgB) <= 25;
-                                if (isBg) {
-                                    sliceImgData[idx+3] = 0; // Şeffaf yap
-                                }
-                            }
-
-                            // Kalan görünür piksellere göre bounding box belirle
-                            if (sliceImgData[idx+3] > 0) {
-                                if (x < sMinX) sMinX = x;
-                                if (x > sMaxX) sMaxX = x;
-                                if (y < sMinY) sMinY = y;
-                                if (y > sMaxY) sMaxY = y;
-                                sFound = true;
-                            }
-                        }
-                    }
-                    ctx.putImageData(sliceImgDataObj, 0, 0); // Şeffaflaştırılmış hali geri yaz
-
-                    if (sFound && sMaxX > sMinX && sMaxY > sMinY) {
-                        const croppedW = sMaxX - sMinX;
-                        const croppedH = sMaxY - sMinY;
-                        const croppedCanvas = document.createElement('canvas');
-                        croppedCanvas.width = croppedW;
-                        croppedCanvas.height = croppedH;
-                        croppedCanvas.getContext('2d').drawImage(tempCanvas, sMinX, sMinY, croppedW, croppedH, 0, 0, croppedW, croppedH);
-                        
-                        imgDataUrl = croppedCanvas.toDataURL('image/png');
-                        strokeW = croppedW / scaleX;
-                        strokeH = croppedH / scaleY;
-                        strokeX = finalScreenLeft + (sMinX / scaleX) + offsetX;
-                        strokeY = finalScreenTop + (sMinY / scaleY) + offsetY;
-                    } else {
-                        continue; // Boş alan atla
-                    }
-
+                    coverCtx.beginPath();
+                    coverCtx.ellipse(finalSw/2, finalSh/2, (finalSw/2) + 2, (finalSh/2) + 2, 0, 0, Math.PI * 2);
+                    coverCtx.fill();
                 } else {
-                    // --- DİKDÖRTGEN (BAR) KESİR DİLİMLEME ---
-                    const sliceRealW = finalSw / dilimSayisi;
-                    const sliceScreenW = finalScreenW / dilimSayisi;
-                    
-                    tempCanvas.width = sliceRealW;
-                    tempCanvas.height = finalSh;
-                    const ctx = tempCanvas.getContext('2d');
-                    
-                    ctx.drawImage(bgCanvas, finalSx + (i * sliceRealW), finalSy, sliceRealW, finalSh, 0, 0, sliceRealW, finalSh);
-                    ctx.drawImage(canvasElm, finalSx + (i * sliceRealW), finalSy, sliceRealW, finalSh, 0, 0, sliceRealW, finalSh);
-                    
-                    imgDataUrl = tempCanvas.toDataURL('image/png');
-                    strokeW = sliceScreenW;
-                    strokeH = finalScreenH;
-                    strokeX = finalScreenLeft + (i * sliceScreenW) + (i * 8); // Her dilimi sağa doğru 8px aralıkla ayır
-                    strokeY = finalScreenTop;
+                    coverCtx.fillRect(0, 0, finalSw, finalSh);
                 }
-
-                // Dilimi Image Objesi olarak Tahtaya Ekle
-                const img = new Image();
-                img.onload = () => {
-                    const stroke = {
+                const coverImg = new Image();
+                coverImg.onload = () => {
+                    const coverStroke = {
                         type: 'image',
-                        imgData: imgDataUrl,
-                        x: strokeX,
-                        y: strokeY,
-                        width: strokeW,
-                        height: strokeH,
+                        imgData: coverCanvas.toDataURL('image/png'),
+                        x: finalScreenLeft,
+                        y: finalScreenTop,
+                        width: finalScreenW,
+                        height: finalScreenH,
                         rotation: 0,
                         isBackground: false,
-                        imgObj: img,
-                        id: Date.now() + Math.random() + i
+                        imgObj: coverImg,
+                        id: Date.now() + Math.random() + "_cover"
                     };
-                    
-                    if (window.drawnStrokes) window.drawnStrokes.push(stroke);
+                    if (window.drawnStrokes) window.drawnStrokes.push(coverStroke);
                     if (typeof window.redrawAllStrokes === 'function') window.redrawAllStrokes();
-                    
-                    // Öğrencilerin ekranına da gönder
                     if (typeof window.sendNetworkData === 'function') {
-                        window.sendNetworkData({ type: 'yeni_cizim', stroke: { ...stroke, imgObj: null } });
+                        window.sendNetworkData({ type: 'yeni_cizim', stroke: { ...coverStroke, imgObj: null } });
                     }
                 };
-                img.src = imgDataUrl;
-            }
+                coverImg.src = coverCanvas.toDataURL('image/png');
+            };
 
-            // Moddan çıkış
-            isDilimleActive = false;
-            dilimleBtn.classList.remove('btn-dilimle-active');
-            const mainBtn = document.getElementById('btn-snapshot-main');
-            if (mainBtn) mainBtn.classList.remove('btn-dilimle-active');
+            // 3D Öne Yatırma Animasyonu ve Kesme İşlemi
+            const performSlicing = (dilimSayisi, targetSw, targetSh, sliceSourceCanvas) => {
+                let targetScreenW = finalScreenW * (targetSw / finalSw);
+                let targetScreenH = finalScreenH * (targetSh / finalSh);
+                let targetScreenTop = finalScreenTop - (targetScreenH - finalScreenH); // Yukarı doğru büyüdü
+                let targetScreenLeft = finalScreenLeft;
+
+                for (let i = 0; i < dilimSayisi; i++) {
+                    const tempCanvas = document.createElement('canvas');
+                    let imgDataUrl;
+                    let strokeW, strokeH, strokeX, strokeY;
+
+                    if (isPieSlicing) {
+                        tempCanvas.width = targetSw;
+                        tempCanvas.height = targetSh;
+                        const ctx = tempCanvas.getContext('2d');
+                        
+                        const centerX = targetSw / 2;
+                        const centerY = targetSh / 2;
+                        
+                        // Açı hesaplamaları (Saat 12 yönünden başla)
+                        const startAngle = (i * 2 * Math.PI) / dilimSayisi - (Math.PI / 2);
+                        const endAngle = ((i + 1) * 2 * Math.PI) / dilimSayisi - (Math.PI / 2);
+                        
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.moveTo(centerX, centerY);
+                        ctx.arc(centerX, centerY, (targetSw/2) + 2, startAngle, endAngle); // Artık 2D daire olduğu için arc yeterli
+                        ctx.closePath();
+                        ctx.clip(); // Sadece bu dilimlik alanı göster
+                        
+                        ctx.drawImage(sliceSourceCanvas, 0, 0, targetSw, targetSh);
+                        ctx.restore();
+                        
+                        // Görsel olarak dilimlerin ayrıldığını belli etmek için hafif offset
+                        const midAngle = (startAngle + endAngle) / 2;
+                        const offsetX = Math.cos(midAngle) * 15;
+                        const offsetY = Math.sin(midAngle) * 15;
+                        
+                        // KESİN KIRPMA (Şeffaf alanları ve ARKA PLANI at)
+                        const sliceImgDataObj = ctx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+                        const sliceImgData = sliceImgDataObj.data;
+                        let sMinX = tempCanvas.width, sMinY = tempCanvas.height, sMaxX = 0, sMaxY = 0;
+                        let sFound = false;
+                        for (let y = 0; y < tempCanvas.height; y++) {
+                            for (let x = 0; x < tempCanvas.width; x++) {
+                                const idx = (y * tempCanvas.width + x) * 4;
+                                
+                                // Chroma Key (Yeşil Perde)
+                                if (sliceImgData[idx+3] > 0) {
+                                    const isBg = Math.abs(sliceImgData[idx]-bgR) <= 25 && Math.abs(sliceImgData[idx+1]-bgG) <= 25 && Math.abs(sliceImgData[idx+2]-bgB) <= 25;
+                                    if (isBg) sliceImgData[idx+3] = 0;
+                                }
+
+                                if (sliceImgData[idx+3] > 0) {
+                                    if (x < sMinX) sMinX = x;
+                                    if (x > sMaxX) sMaxX = x;
+                                    if (y < sMinY) sMinY = y;
+                                    if (y > sMaxY) sMaxY = y;
+                                    sFound = true;
+                                }
+                            }
+                        }
+                        ctx.putImageData(sliceImgDataObj, 0, 0);
+
+                        if (sFound && sMaxX > sMinX && sMaxY > sMinY) {
+                            const croppedW = sMaxX - sMinX;
+                            const croppedH = sMaxY - sMinY;
+                            const croppedCanvas = document.createElement('canvas');
+                            croppedCanvas.width = croppedW;
+                            croppedCanvas.height = croppedH;
+                            croppedCanvas.getContext('2d').drawImage(tempCanvas, sMinX, sMinY, croppedW, croppedH, 0, 0, croppedW, croppedH);
+                            
+                            imgDataUrl = croppedCanvas.toDataURL('image/png');
+                            strokeW = croppedW / scaleX;
+                            strokeH = croppedH / scaleY;
+                            strokeX = targetScreenLeft + (sMinX / scaleX) + offsetX;
+                            strokeY = targetScreenTop + (sMinY / scaleY) + offsetY;
+                        } else {
+                            continue;
+                        }
+                    } else {
+                        // --- DİKDÖRTGEN (BAR) DİLİMLEME ---
+                        const sliceRealW = targetSw / dilimSayisi;
+                        const sliceScreenW = targetScreenW / dilimSayisi;
+                        
+                        tempCanvas.width = sliceRealW;
+                        tempCanvas.height = targetSh;
+                        const ctx = tempCanvas.getContext('2d');
+                        
+                        ctx.drawImage(sliceSourceCanvas, (i * sliceRealW), 0, sliceRealW, targetSh, 0, 0, sliceRealW, targetSh);
+                        
+                        imgDataUrl = tempCanvas.toDataURL('image/png');
+                        strokeW = sliceScreenW;
+                        strokeH = targetScreenH;
+                        strokeX = targetScreenLeft + (i * sliceScreenW) + (i * 8); // 8px boşluk
+                        strokeY = targetScreenTop;
+                    }
+
+                    // Tahtaya Ekle
+                    const img = new Image();
+                    img.onload = () => {
+                        const stroke = {
+                            type: 'image',
+                            imgData: imgDataUrl,
+                            x: strokeX,
+                            y: strokeY,
+                            width: strokeW,
+                            height: strokeH,
+                            rotation: 0,
+                            isBackground: false,
+                            imgObj: img,
+                            id: Date.now() + Math.random() + i
+                        };
+                        if (window.drawnStrokes) window.drawnStrokes.push(stroke);
+                        if (typeof window.redrawAllStrokes === 'function') window.redrawAllStrokes();
+                        if (typeof window.sendNetworkData === 'function') {
+                            window.sendNetworkData({ type: 'yeni_cizim', stroke: { ...stroke, imgObj: null } });
+                        }
+                    };
+                    img.src = imgDataUrl;
+                }
+
+                // Moddan çıkış
+                isDilimleActive = false;
+                dilimleBtn.classList.remove('btn-dilimle-active');
+                const mainBtn = document.getElementById('btn-snapshot-main');
+                if (mainBtn) mainBtn.classList.remove('btn-dilimle-active');
+            };
+
+            // Orijinal görünümü hazırlıyoruz
+            const sourceCanvas = document.createElement('canvas');
+            sourceCanvas.width = finalSw;
+            sourceCanvas.height = finalSh;
+            sourceCanvas.getContext('2d').drawImage(bgCanvas, finalSx, finalSy, finalSw, finalSh, 0, 0, finalSw, finalSh);
+            sourceCanvas.getContext('2d').drawImage(canvasElm, finalSx, finalSy, finalSw, finalSh, 0, 0, finalSw, finalSh);
+
+            if (is3D) {
+                // 3D öne yatırma animasyonu
+                addCoverStroke(); // Önce eskiyi gizle
+
+                const animImg = document.createElement('img');
+                animImg.src = sourceCanvas.toDataURL();
+                animImg.style.position = 'absolute';
+                animImg.style.left = finalScreenLeft + 'px';
+                animImg.style.top = finalScreenTop + 'px';
+                animImg.style.width = finalScreenW + 'px';
+                animImg.style.height = finalScreenH + 'px';
+                animImg.style.zIndex = '10000';
+                animImg.style.transition = 'all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1)';
+                animImg.style.transformOrigin = 'bottom center';
+                document.body.appendChild(animImg);
+
+                // Matematiksel olarak "dikleştirilmiş" halini oluştur (Kare şekline getir)
+                const targetSize = Math.max(finalSw, finalSh);
+                const flatCanvas = document.createElement('canvas');
+                flatCanvas.width = targetSize;
+                flatCanvas.height = targetSize;
+                const fCtx = flatCanvas.getContext('2d');
+                fCtx.scale(targetSize / finalSw, targetSize / finalSh);
+                fCtx.drawImage(sourceCanvas, 0, 0);
+
+                // CSS Animasyonunu tetikle
+                setTimeout(() => {
+                    const targetScreenSize = Math.max(finalScreenW, finalScreenH);
+                    animImg.style.transform = `scaleY(${targetSize / finalSh})`;
+                }, 50);
+
+                // Animasyon bitince sor ve kes
+                setTimeout(() => {
+                    const dilimStr = prompt("Kesirler için Kaç Dilim Olacak?", "4");
+                    if (!dilimStr) {
+                        animImg.remove();
+                        if (window.drawnStrokes) window.drawnStrokes.pop(); // Cover'ı geri al
+                        if (typeof window.redrawAllStrokes === 'function') window.redrawAllStrokes();
+                        return;
+                    }
+                    const dilimSayisi = parseInt(dilimStr, 10);
+                    if (!isNaN(dilimSayisi) && dilimSayisi >= 2 && dilimSayisi <= 100) {
+                        performSlicing(dilimSayisi, targetSize, targetSize, flatCanvas);
+                    }
+                    animImg.remove();
+                }, 650);
+
+            } else {
+                // 2D Normal Kesme (Madeni para veya Çubuk)
+                const dilimStr = prompt("Kesirler için Kaç Dilim Olacak?", "4");
+                if (!dilimStr) return;
+                const dilimSayisi = parseInt(dilimStr, 10);
+                if (!isNaN(dilimSayisi) && dilimSayisi >= 2 && dilimSayisi <= 100) {
+                    addCoverStroke(); // Sormadan eklemiyoruz ki iptal edilirse silmekle uğraşmayalım
+                    performSlicing(dilimSayisi, finalSw, finalSh, sourceCanvas);
+                }
+            }
         });
     }
 });
