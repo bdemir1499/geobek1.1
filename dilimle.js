@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 3D AKILLI ALGILAMA (Pasta seçildiyse ve şekil basıksa)
             const aspectRatio = Math.max(finalSw, finalSh) / Math.min(finalSw, finalSh);
-            const is3D = isPieSlicing && (aspectRatio > 1.15); // Genişlik/Yükseklik farkı %15'ten fazlaysa 3D kabul et
+            const is3D = isPieSlicing && (aspectRatio > 1.02); // Genişlik/Yükseklik farkı %2'ten fazlaysa 3D kabul et
 
             // "Boşluk Örtüsü" oluşturucu
             const addCoverStroke = () => {
