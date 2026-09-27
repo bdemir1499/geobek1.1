@@ -88,7 +88,14 @@ document.addEventListener('DOMContentLoaded', () => {
             dilimleBox.remove();
             dilimleBox = null;
 
-            if (rect.width < 30 || rect.height < 30) return; // Çok küçükse iptal (yanlış tıklama)
+            if (rect.width < 30 || rect.height < 30) {
+                // Sadece boşluğa tıklandıysa (çok küçük seçim) araçtan çık
+                isDilimleActive = false;
+                dilimleBtn.classList.remove('btn-dilimle-active');
+                const mainBtn = document.getElementById('btn-snapshot-main');
+                if (mainBtn) mainBtn.classList.remove('btn-dilimle-active');
+                return; // İptal
+            }
 
             const canvasElm = document.getElementById('drawing-canvas');
             const bgCanvas = document.getElementById('bg-canvas');

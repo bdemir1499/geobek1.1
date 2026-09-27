@@ -4072,9 +4072,18 @@ canvas.addEventListener('pointerup', (e) => {
             else currentTool = 'move';
 
             selectedItem = newImgStroke;
-            snapshotStart = null;
-            redrawAllStrokes();
+        } else {
+            // Sadece boşluğa tıklandıysa (çok küçük seçim) araçtan çık
+            if (typeof setActiveTool === 'function') setActiveTool('none');
+            else currentTool = 'none';
+            if (typeof btnSnapshotMain !== 'undefined' && btnSnapshotMain) {
+                btnSnapshotMain.classList.remove('active');
+            }
         }
+        
+        // Kutunun sonsuza kadar fareyi takip etmesini engellemek için her durumda sıfırla!
+        snapshotStart = null;
+        redrawAllStrokes();
     }
 
     // --- F) DÃ¯Â¿Â½KDÃ¯Â¿Â½RTGEN ARACI ---
