@@ -184,9 +184,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } catch(e) {}
 
-            // DİKDÖRTGEN Mİ PASTA MI? (Oran %15'e kadar yakınsa Kare/Daire kabul et ve Pasta (Pie) dilimle, yoksa Yatay Kesir (Bar) dilimle)
-            const aspectDiff = Math.abs(finalSw - finalSh) / Math.max(finalSw, finalSh);
-            const isPieSlicing = aspectDiff < 0.15;
+            // KULLANICIYA SOR: Nasıl dilimlensin?
+            const isPieSlicing = confirm("Şekil yuvarlak (Pasta/Pizza) gibi merkezden mi dilimlensin?\n\n- [Tamam]'a basarsanız: Pasta Dilimi\n- [İptal]'e basarsanız: Dikey Çubuk Dilimi (Dikdörtgen)");
 
             // 1. ÖNCE "BOŞLUK ÖRTÜSÜNÜ" (MASK) EKLE (Orijinal çizimi gizlemek için akıllı boyama)
             const coverCanvas = document.createElement('canvas');
@@ -197,7 +196,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (isPieSlicing) {
                 coverCtx.beginPath();
-                coverCtx.arc(finalSw/2, finalSh/2, Math.max(finalSw, finalSh)/2 + 2, 0, Math.PI * 2);
+                const coverRadius = Math.sqrt((finalSw/2)**2 + (finalSh/2)**2) + 2;
+                coverCtx.arc(finalSw/2, finalSh/2, coverRadius, 0, Math.PI * 2);
                 coverCtx.fill();
             } else {
                 coverCtx.fillRect(0, 0, finalSw, finalSh);
@@ -238,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     const centerX = finalSw / 2;
                     const centerY = finalSh / 2;
-                    const radius = Math.max(finalSw, finalSh) / 2;
+                    const radius = Math.sqrt(centerX*centerX + centerY*centerY) + 2;
                     
                     // Açı hesaplamaları (Saat 12 yönünden başla)
                     const startAngle = (i * 2 * Math.PI) / dilimSayisi - (Math.PI / 2);
