@@ -2390,7 +2390,21 @@ function findHit(pos) {
             const localClickY = dx * Math.sin(-angleRad) + dy * Math.cos(-angleRad);
 
             if (localClickX > -halfW && localClickX < halfW && localClickY > -halfH && localClickY < halfH) {
-                return { item: stroke, pointKey: 'self' };
+                // Şeffaf piksel tıklama zırhı (Pixel-perfect hit detection)
+                let alpha = 255;
+                if (stroke.imgObj) {
+                    try {
+                        const hitCanvas = document.createElement('canvas');
+                        hitCanvas.width = 1;
+                        hitCanvas.height = 1;
+                        const hitCtx = hitCanvas.getContext('2d', { willReadFrequently: true });
+                        hitCtx.drawImage(stroke.imgObj, -(localClickX + halfW), -(localClickY + halfH));
+                        alpha = hitCtx.getImageData(0, 0, 1, 1).data[3];
+                    } catch (e) { alpha = 255; }
+                }
+                if (alpha > 5) { // Tam şeffaf veya çok silik değilse tıklamayı kabul et
+                    return { item: stroke, pointKey: 'self' };
+                }
             }
         }
 
