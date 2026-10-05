@@ -148,26 +148,26 @@ body.theme-siyah {
 }
 
 body.theme-yesil {
-  --btn-bg: #b45309; /* Ahşap rengi */
-  --btn-border: #d97706;
-  --btn-shadow: #78350f;
-  --btn-text: #fff8dc; /* Tebeşir beyazı */
+  --btn-bg: #3b7b4f; /* Tahtadan biraz daha açık yeşil */
+  --btn-border: #4d9c66;
+  --btn-shadow: #21492f;
+  --btn-text: #ffffff; 
   
-  --btn-hover-bg: #d97706;
-  --btn-hover-border: #f59e0b;
+  --btn-hover-bg: #458c5a;
+  --btn-hover-border: #5cb578;
   --btn-hover-text: #ffffff;
   
-  --btn-active-bg: #fcd34d;
+  --btn-active-bg: #fcd34d; /* Seçiliyken dikkat çekici sarı/turuncu */
   --btn-active-border: #fde68a;
   --btn-active-shadow: #d97706;
 
-  --btn-sub-bg: #78350f;
-  --btn-sub-border: #92400e;
-  --btn-sub-shadow: #451a03;
+  --btn-sub-bg: #326943;
+  --btn-sub-border: #3f8455;
+  --btn-sub-shadow: #1c3c26;
   
-  --btn-sub-hover-bg: #0ea5e9;
-  --btn-sub-hover-border: #38bdf8;
-  --btn-sub-hover-shadow: #0284c7;
+  --btn-sub-hover-bg: #458c5a;
+  --btn-sub-hover-border: #5cb578;
+  --btn-sub-hover-shadow: #21492f;
 }
 
 /* Premium Buton Stili (Eğlenceli, Soft Oyun Butonu Tarzı) */
