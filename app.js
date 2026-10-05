@@ -9396,12 +9396,11 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.style.backgroundSize = '30px 30px';
         } else if (cPattern === 'izometrik') {
             document.body.style.backgroundImage = `
-                linear-gradient(30deg, ${pColor} 1px, transparent 1px),
-                linear-gradient(150deg, ${pColor} 1px, transparent 1px),
-                linear-gradient(90deg, ${pColor} 1px, transparent 1px)
+                radial-gradient(${pColor} 2px, transparent 2px),
+                radial-gradient(${pColor} 2px, transparent 2px)
             `;
-            document.body.style.backgroundSize = '34.64px 60px'; 
-            document.body.style.backgroundPosition = '0 0, 0 0, 17.32px 0';
+            document.body.style.backgroundSize = '30px 51.96px'; 
+            document.body.style.backgroundPosition = '0 0, 15px 25.98px';
         }
     };
 
