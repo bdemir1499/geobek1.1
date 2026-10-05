@@ -512,52 +512,6 @@ body.cursor-eraser .eraser-cursor-preview {
     height: auto;         /* İçeriğe göre uzasın */
 }
 
-/* Sadece "Resim Yükle" butonunun yazısını küçült ve sığdır */
-#btn-upload {
-    font-size: 10px !important;   /* Diğerlerinden (12px) daha küçük yap */
-    line-height: 1.1 !important;  /* Satırları birbirine yaklaştır */
-    padding: 4px 1px !important;  /* Kenar boşluklarını azaltarak yer aç */
-    min-height: 50px;             /* Yazı sığmazsa buton aşağı doğru uzasın */
-}
-
-/* --- RESİM YÜKLEME BUTONU ÖZELLEŞTİRMESİ --- */
-#btn-upload {
-    /* 1. Orijinal yazıyı görünmez yap */
-    color: transparent !important;
-    position: relative; /* Yeni yazı buna göre hizalanacak */
-    
-    /* 2. Buton boyutunu ayarla */
-    height: auto !important;
-    min-height: 65px; /* 3 satır sığacak kadar yükseklik */
-    padding: 0 !important;
-    
-    /* Hizalama */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* 3. Yeni Yazıyı Yerleştir */
-#btn-upload::after {
-    /* \00000a kodu CSS'de "Alt Satıra Geç" (Enter) demektir */
-    content: "Resim\00000aDosya(PDFKitap)\00000aYükle";
-    
-    /* ?? YENİ TEMA RENGİ: Mat Beyaz/Gri ?? */
-    color: #cdd6f4 !important; 
-    
-    font-size: 10px;
-    font-weight: bold;
-    line-height: 1.3; 
-    text-align: center;
-    white-space: pre; 
-    
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-}
-
 
 /* --- FİZİKSEL ARAÇLAR İÇİN SİYAH TEMA (BEYAZ KAĞIT UYUMU) --- */
 
