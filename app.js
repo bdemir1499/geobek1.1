@@ -1086,20 +1086,14 @@ let current3DShape = null; // Hangi 3D Ã¯Â¿Â½ekil seÃ¯Â¿Â½ili (Ã¯�
 let temp3DData = null;     // Ã¯Â¿Â½izim esnasÃ¯Â¿Â½ndaki canlÃ¯Â¿Â½ Ã¯Â¿Â½nizleme verisi
 let active3DSliderStroke = null; // SÃ¯Â¿Â½rgÃ¯Â¿Â½sÃ¯Â¿Â½ oynatÃ¯Â¿Â½lan seÃ¯Â¿Â½ili 3D cisim
 
-// SÃ¯Â¿Â½rgÃ¯Â¿Â½ (Slider) Kutusunu HTML'e Otomatik Ekle
+// Sürgü (Slider) Kutusunu HTML'e Otomatik Ekle
 const sliderContainer = document.createElement('div');
 sliderContainer.id = 'slider-container';
 sliderContainer.innerHTML = `
-    <label>AÃ¯Â¿Â½Ã¯Â¿Â½nÃ¯Â¿Â½m (Katlama)</label>
+    <label>Açınım (Katlama)</label>
     <input type="range" id="shape-slider" min="0" max="100" value="0">
 `;
-const leftPanel = document.querySelector('.left-panel');
-const btnOyunlarOptions = document.getElementById('oyunlar-options');
-if (leftPanel && btnOyunlarOptions) {
-    leftPanel.insertBefore(sliderContainer, btnOyunlarOptions.nextSibling);
-} else {
-    document.body.appendChild(sliderContainer);
-}
+document.body.appendChild(sliderContainer);
 const shapeSlider = document.getElementById('shape-slider');
 
 // Alan / Hacim GÃ¯Â¿Â½sterge Kutusunu HTML'e Otomatik Ekle
