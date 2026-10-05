@@ -8689,45 +8689,52 @@ window.addEventListener('load', () => {
                 let h_val = parseFloat(h);
 
                 // FormÃ¯Â¿Â½ller HTML destekli renkli ve kalÃ¯Â¿Â½n yazÃ¯Â¿Â½larla Ã¯Â¿Â½ekillendiriliyor
-                if (activeShape.shapeType === 'sphere') {
-                    formulMetni = `<span style="color:#00ffcc; font-size:16px;">KÃ¯Â¿Â½re</span><br>r = ${r} cm<br><span style="color:#ff00ff">Hacim = (4/3)Ã¯Â¿Â½?Ã¯Â¿Â½rÃ¯Â¿Â½</span><br>= (4/3)Ã¯Â¿Â½3Ã¯Â¿Â½(${r})Ã¯Â¿Â½ = <b>${(4 * r_val * r_val * r_val).toFixed(1)} cmÃ¯Â¿Â½</b><br><span style="color:#ff00ff">Alan = 4Ã¯Â¿Â½?Ã¯Â¿Â½rÃ¯Â¿Â½</span><br>= 4Ã¯Â¿Â½3Ã¯Â¿Â½(${r})Ã¯Â¿Â½ = <b>${(12 * r_val * r_val).toFixed(1)} cmÃ¯Â¿Â½</b>`;
-                } else if (activeShape.shapeType === 'prism_cube') {
-                    formulMetni = `<span style="color:#00ffcc; font-size:16px;">KÃ¯Â¿Â½p</span><br>a = ${r} cm<br><span style="color:#ff00ff">Hacim = aÃ¯Â¿Â½</span><br>= (${r})Ã¯Â¿Â½ = <b>${(r_val * r_val * r_val).toFixed(1)} cmÃ¯Â¿Â½</b><br><span style="color:#ff00ff">Alan = 6Ã¯Â¿Â½aÃ¯Â¿Â½</span><br>= 6Ã¯Â¿Â½(${r})Ã¯Â¿Â½ = <b>${(6 * r_val * r_val).toFixed(1)} cmÃ¯Â¿Â½</b>`;
-                } else if (activeShape.shapeType === 'prism_cylinder') {
+                if (activeShape.shapeType === '3d_kure') {
+                    formulMetni = `<span style="color:#00ffcc; font-size:16px;">Küre</span><br>r = ${r} cm<br><span style="color:#ff00ff">Hacim = (4/3) × π × r³</span><br>= (4/3) × 3 × (${r})³ = <b>${(4 * r_val * r_val * r_val).toFixed(1)} cm³</b><br><span style="color:#ff00ff">Alan = 4 × π × r²</span><br>= 4 × 3 × (${r})² = <b>${(12 * r_val * r_val).toFixed(1)} cm²</b>`;
+                } else if (activeShape.shapeType === '3d_kup') {
+                    formulMetni = `<span style="color:#00ffcc; font-size:16px;">Küp</span><br>a = ${r} cm<br><span style="color:#ff00ff">Hacim = a³</span><br>= (${r})³ = <b>${(r_val * r_val * r_val).toFixed(1)} cm³</b><br><span style="color:#ff00ff">Alan = 6 × a²</span><br>= 6 × (${r})² = <b>${(6 * r_val * r_val).toFixed(1)} cm²</b>`;
+                } else if (activeShape.shapeType === '3d_silindir') {
                     let tabanAlani = 3 * r_val * r_val;
                     let yanalAlan = 2 * 3 * r_val * h_val;
                     let toplamAlan = 2 * tabanAlani + yanalAlan;
                     let hacim = tabanAlani * h_val;
-                    formulMetni = `<span style="color:#00ffcc; font-size:16px;">Silindir</span><br>r = ${r} cm, h = ${h} cm<br><span style="color:#ff00ff">Taban AlanÃ¯Â¿Â½ = ?Ã¯Â¿Â½rÃ¯Â¿Â½</span><br>= 3Ã¯Â¿Â½(${r})Ã¯Â¿Â½ = <b>${tabanAlani.toFixed(1)} cmÃ¯Â¿Â½</b><br><span style="color:#ff00ff">Yanal Alan = 2Ã¯Â¿Â½?Ã¯Â¿Â½rÃ¯Â¿Â½h</span><br>= 2Ã¯Â¿Â½3Ã¯Â¿Â½${r}Ã¯Â¿Â½${h} = <b>${yanalAlan.toFixed(1)} cmÃ¯Â¿Â½</b><br><span style="color:#ff00ff">Toplam Alan = 2Ã¯Â¿Â½(Taban AlanÃ¯Â¿Â½) + Yanal Alan</span><br>= 2Ã¯Â¿Â½${tabanAlani.toFixed(1)} + ${yanalAlan.toFixed(1)} = <b>${toplamAlan.toFixed(1)} cmÃ¯Â¿Â½</b><br><span style="color:#ff00ff">Hacim = ?Ã¯Â¿Â½rÃ¯Â¿Â½Ã¯Â¿Â½h</span><br>= 3Ã¯Â¿Â½(${r})Ã¯Â¿Â½Ã¯Â¿Â½${h} = <b>${hacim.toFixed(1)} cmÃ¯Â¿Â½</b>`;
-                } else if (activeShape.shapeType === 'pyramid_cone') {
-                    formulMetni = `<span style="color:#00ffcc; font-size:16px;">Koni</span><br>r = ${r} cm, h = ${h} cm<br><span style="color:#ff00ff">Hacim = (?Ã¯Â¿Â½rÃ¯Â¿Â½Ã¯Â¿Â½h)/3</span><br>= (3Ã¯Â¿Â½(${r})Ã¯Â¿Â½Ã¯Â¿Â½${h})/3 = <b>${(r_val * r_val * h_val).toFixed(1)} cmÃ¯Â¿Â½</b>`;
-                } else if (activeShape.shapeType === 'prism_rect') {
+                    formulMetni = `<span style="color:#00ffcc; font-size:16px;">Silindir</span><br>r = ${r} cm, h = ${h} cm<br><span style="color:#ff00ff">Taban Alanı = π × r²</span><br>= 3 × (${r})² = <b>${tabanAlani.toFixed(1)} cm²</b><br><span style="color:#ff00ff">Yanal Alan = 2 × π × r × h</span><br>= 2 × 3 × ${r} × ${h} = <b>${yanalAlan.toFixed(1)} cm²</b><br><span style="color:#ff00ff">Toplam Alan = 2 × (Taban Alanı) + Yanal Alan</span><br>= 2 × ${tabanAlani.toFixed(1)} + ${yanalAlan.toFixed(1)} = <b>${toplamAlan.toFixed(1)} cm²</b><br><span style="color:#ff00ff">Hacim = π × r² × h</span><br>= 3 × (${r})² × ${h} = <b>${hacim.toFixed(1)} cm³</b>`;
+                } else if (activeShape.shapeType === '3d_koni') {
+                    formulMetni = `<span style="color:#00ffcc; font-size:16px;">Koni</span><br>r = ${r} cm, h = ${h} cm<br><span style="color:#ff00ff">Hacim = (π × r² × h) / 3</span><br>= (3 × (${r})² × ${h}) / 3 = <b>${(r_val * r_val * h_val).toFixed(1)} cm³</b>`;
+                } else if (activeShape.shapeType === '3d_dikdortgen_prizma') {
                     let a = (r_val * 1.5).toFixed(1);
                     let b = r;
                     let taban = (a * b).toFixed(1);
                     let yanal = (2 * (parseFloat(a) + parseFloat(b)) * h_val).toFixed(1);
-                    formulMetni = `<span style="color:#00ffcc; font-size:16px;">DikdÃ¯Â¿Â½rtgenler PrizmasÃ¯Â¿Â½</span><br>a = ${a} cm, b = ${b} cm, h = ${h} cm<br><span style="color:#ff00ff">Hacim = aÃ¯Â¿Â½bÃ¯Â¿Â½h</span><br>= ${a}Ã¯Â¿Â½${b}Ã¯Â¿Â½${h} = <b>${(taban * h_val).toFixed(1)} cmÃ¯Â¿Â½</b><br><span style="color:#ff00ff">Alan = 2Ã¯Â¿Â½(aÃ¯Â¿Â½b) + Yanal Alan</span><br>= 2Ã¯Â¿Â½${taban} + ${yanal} = <b>${(2 * taban + parseFloat(yanal)).toFixed(1)} cmÃ¯Â¿Â½</b>`;
-                } else if (activeShape.shapeType.startsWith('prism_') || activeShape.shapeType.startsWith('pyramid_')) {
-                    let isPrism = activeShape.shapeType.startsWith('prism_');
-                    let sides = parseInt(activeShape.shapeType.split('_')[1]);
+                    formulMetni = `<span style="color:#00ffcc; font-size:16px;">Dikdörtgenler Prizması</span><br>a = ${a} cm, b = ${b} cm, h = ${h} cm<br><span style="color:#ff00ff">Hacim = a × b × h</span><br>= ${a} × ${b} × ${h} = <b>${(taban * h_val).toFixed(1)} cm³</b><br><span style="color:#ff00ff">Alan = 2 × (a × b) + Yanal Alan</span><br>= 2 × ${taban} + ${yanal} = <b>${(2 * taban + parseFloat(yanal)).toFixed(1)} cm²</b>`;
+                } else if (activeShape.shapeType.includes('_prizma') || activeShape.shapeType.includes('_piramit')) {
+                    let isPrism = activeShape.shapeType.includes('_prizma');
+                    let nameParts = activeShape.shapeType.split('_');
+                    let shapePrefix = nameParts[1]; // e.g. "ucgen", "kare", "besgen", "altigen"
+                    
+                    let sides = 4;
+                    if (shapePrefix === 'ucgen') sides = 3;
+                    else if (shapePrefix === 'kare') sides = 4;
+                    else if (shapePrefix === 'besgen') sides = 5;
+                    else if (shapePrefix === 'altigen') sides = 6;
 
-                    let a_val = (2 * r_val * Math.sin(Math.PI / sides)).toFixed(1); // Kenar uzunluÃ¯Â¿Â½u
-                    let apothem = (r_val * Math.cos(Math.PI / sides)).toFixed(1); // Merkeze uzaklÃ¯Â¿Â½k
+                    let a_val = (2 * r_val * Math.sin(Math.PI / sides)).toFixed(1); // Kenar uzunluğu
+                    let apothem = (r_val * Math.cos(Math.PI / sides)).toFixed(1); // Merkeze uzaklık
                     let tabanAlani = (sides * a_val * apothem / 2).toFixed(1);
                     let cevre = (sides * a_val).toFixed(1);
 
-                    let sekilAdi = sides === 3 ? "Ã¯Â¿Â½Ã¯Â¿Â½gen" : sides === 5 ? "BeÃ¯Â¿Â½gen" : sides === 6 ? "AltÃ¯Â¿Â½gen" : sides + "gen";
+                    let sekilAdi = sides === 3 ? "Üçgen" : sides === 4 ? "Kare" : sides === 5 ? "Beşgen" : sides === 6 ? "Altıgen" : sides + "gen";
                     let anaBaslik = isPrism ? `${sekilAdi} Prizma` : `${sekilAdi} Piramit`;
 
                     let sonucHacim = isPrism ? (tabanAlani * h_val).toFixed(1) : (tabanAlani * h_val / 3).toFixed(1);
-                    let hacimFormulStr = isPrism ? "Taban AlanÃ¯Â¿Â½ Ã¯Â¿Â½ h" : "(Taban AlanÃ¯Â¿Â½ Ã¯Â¿Â½ h) / 3";
-                    let hacimDegerStr = isPrism ? `${tabanAlani} Ã¯Â¿Â½ ${h}` : `(${tabanAlani} Ã¯Â¿Â½ ${h}) / 3`;
+                    let hacimFormulStr = isPrism ? "Taban Alanı × h" : "(Taban Alanı × h) / 3";
+                    let hacimDegerStr = isPrism ? `${tabanAlani} × ${h}` : `(${tabanAlani} × ${h}) / 3`;
 
-                    formulMetni = `<span style="color:#00ffcc; font-size:16px;">${anaBaslik}</span><br>Taban AyrÃ¯Â¿Â½tÃ¯Â¿Â½ (a) ? ${a_val} cm, YÃ¯Â¿Â½kseklik (h) ? ${h} cm<br><span style="color:#ff00ff">Taban AlanÃ¯Â¿Â½ ? ${tabanAlani} cmÃ¯Â¿Â½</span><br><span style="color:#ff00ff">Hacim = ${hacimFormulStr}</span><br>= ${hacimDegerStr} = <b>${sonucHacim} cmÃ¯Â¿Â½</b>`;
+                    formulMetni = `<span style="color:#00ffcc; font-size:16px;">${anaBaslik}</span><br>Taban Ayrıtı (a) = ${a_val} cm, Yükseklik (h) = ${h} cm<br><span style="color:#ff00ff">Taban Alanı = ${tabanAlani} cm²</span><br><span style="color:#ff00ff">Hacim = ${hacimFormulStr}</span><br>= ${hacimDegerStr} = <b>${sonucHacim} cm³</b>`;
 
                     if (isPrism) {
                         let yanalAlan = (cevre * h_val).toFixed(1);
-                        formulMetni += `<br><span style="color:#ff00ff">Yanal Alan = Ã¯Â¿Â½evre Ã¯Â¿Â½ h</span><br>= ${cevre} Ã¯Â¿Â½ ${h} = <b>${yanalAlan} cmÃ¯Â¿Â½</b>`;
+                        formulMetni += `<br><span style="color:#ff00ff">Yanal Alan = Çevre × h</span><br>= ${cevre} × ${h} = <b>${yanalAlan} cm²</b>`;
                     }
                 }
 
