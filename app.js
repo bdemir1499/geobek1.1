@@ -2559,7 +2559,9 @@ window.distance = distance;
 
 // --- ARAÃ¯Â¿Â½ SEÃ¯Â¿Â½Ã¯Â¿Â½MÃ¯Â¿Â½ (TAMAMEN DÃ¯Â¿Â½ZELTÃ¯Â¿Â½LMÃ¯Â¿Â½Ã¯Â¿Â½ VERSÃ¯Â¿Â½YON) ---
 function setActiveTool(tool) {
-    // Oyunlar menÃ¯Â¿Â½sÃ¯Â¿Â½nÃ¯Â¿Â½ her araÃ¯Â¿Â½ deÃ¯Â¿Â½iÃ¯Â¿Â½iminde kapat ve inline olarak gizle
+    const tahtaOpts = document.getElementById('tahta-options');
+    if (tahtaOpts) { tahtaOpts.classList.add('hidden'); tahtaOpts.style.display = 'none'; }
+    // Oyunlar menüsünü her araç değişiminde kapat ve inline olarak gizle
     if (oyunlarOptions) {
         oyunlarOptions.classList.add('hidden');
         oyunlarOptions.style.display = 'none';
@@ -6671,6 +6673,10 @@ function setupConnectionEvents() {
                 window.dispatchEvent(new CustomEvent('katlama_sistemi', { detail: d }));
                 return;
             }
+            if (d.type === 'zemin_degistir') {
+                if (window.applyZemin) window.applyZemin(d.color, d.pattern);
+                return;
+            }
 
             // --- EKRANLAR ARASI Ã¯Â¿Â½Ã¯Â¿Â½ZÃ¯Â¿Â½NÃ¯Â¿Â½RLÃ¯Â¿Â½K ADAPTASYONU ---
             const canvasElm = document.getElementById('drawing-canvas');
@@ -9358,4 +9364,99 @@ if (window.OyunListesi) {
         window.OyunListesi[i].tr = duzeltmeler[i];
     }
 }
+
+// === TAHTA (ZEMİN VE DESEN) SEÇİM MOTORU ===
+document.addEventListener('DOMContentLoaded', () => {
+    const btnTahta = document.getElementById('btn-tahta');
+    const tahtaOptions = document.getElementById('tahta-options');
+    const tahtaColors = document.getElementById('tahta-colors');
+    const tahtaPatterns = document.getElementById('tahta-patterns');
+    const btnBack = document.getElementById('btn-t-back');
+    
+    let currentColor = 'siyah';
+    let currentPattern = 'noktali';
+
+    window.applyZemin = function(cColor, cPattern) {
+        let bgColor = '#1e1e2e';
+        let pColor = 'rgba(255,255,255,0.15)'; 
+        
+        if (cColor === 'siyah') { bgColor = '#1e1e2e'; pColor = 'rgba(205, 214, 244, 0.15)'; }
+        if (cColor === 'krem') { bgColor = '#fdf6e3'; pColor = 'rgba(0, 0, 0, 0.15)'; }
+        if (cColor === 'yesil') { bgColor = '#2a5a3b'; pColor = 'rgba(255, 255, 255, 0.2)'; }
+
+        document.body.style.backgroundColor = bgColor;
+        
+        if (cPattern === 'duz') {
+            document.body.style.backgroundImage = 'none';
+        } else if (cPattern === 'noktali') {
+            document.body.style.backgroundImage = `radial-gradient(${pColor} 2px, transparent 2px)`;
+            document.body.style.backgroundSize = '30px 30px';
+        } else if (cPattern === 'kareli') {
+            document.body.style.backgroundImage = `linear-gradient(${pColor} 1px, transparent 1px), linear-gradient(90deg, ${pColor} 1px, transparent 1px)`;
+            document.body.style.backgroundSize = '30px 30px';
+        } else if (cPattern === 'izometrik') {
+            document.body.style.backgroundImage = `
+                linear-gradient(30deg, ${pColor} 1px, transparent 1px),
+                linear-gradient(150deg, ${pColor} 1px, transparent 1px),
+                linear-gradient(90deg, ${pColor} 1px, transparent 1px)
+            `;
+            document.body.style.backgroundSize = '34.64px 60px'; 
+            document.body.style.backgroundPosition = '0 0, 0 0, 17.32px 0';
+        }
+    };
+
+    if(btnTahta) {
+        btnTahta.addEventListener('click', () => {
+            if(typeof setActiveTool === 'function') setActiveTool('none'); // Diğer menüleri kapat
+            if (tahtaOptions.classList.contains('hidden')) {
+                tahtaOptions.classList.remove('hidden');
+                tahtaOptions.style.display = 'flex';
+                tahtaColors.style.display = 'flex';
+                tahtaColors.classList.remove('hidden');
+                tahtaPatterns.classList.add('hidden');
+                tahtaPatterns.style.display = 'none';
+            } else {
+                tahtaOptions.classList.add('hidden');
+                tahtaOptions.style.display = 'none';
+            }
+        });
+    }
+
+    if(btnBack) {
+        btnBack.addEventListener('click', () => {
+            tahtaPatterns.classList.add('hidden');
+            tahtaPatterns.style.display = 'none';
+            tahtaColors.classList.remove('hidden');
+            tahtaColors.style.display = 'flex';
+        });
+    }
+
+    ['siyah', 'krem', 'yesil'].forEach(c => {
+        const btn = document.getElementById(`btn-t-${c}`);
+        if(btn) {
+            btn.addEventListener('click', () => {
+                currentColor = c;
+                tahtaColors.classList.add('hidden');
+                tahtaColors.style.display = 'none';
+                tahtaPatterns.classList.remove('hidden');
+                tahtaPatterns.style.display = 'flex';
+            });
+        }
+    });
+
+    ['duz', 'noktali', 'kareli', 'izometrik'].forEach(p => {
+        const btn = document.getElementById(`btn-p-${p}`);
+        if(btn) {
+            btn.addEventListener('click', () => {
+                currentPattern = p;
+                window.applyZemin(currentColor, currentPattern);
+                tahtaOptions.classList.add('hidden');
+                tahtaOptions.style.display = 'none';
+                if (typeof window.sendNetworkData === 'function') {
+                    window.sendNetworkData({ type: 'zemin_degistir', color: currentColor, pattern: currentPattern });
+                }
+            });
+        }
+    });
+});
 
