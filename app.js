@@ -9373,7 +9373,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const tahtaPatterns = document.getElementById('tahta-patterns');
     const btnBack = document.getElementById('btn-t-back');
     
-    let currentColor = 'siyah';
+    let currentColor = 'krem';
     let currentPattern = 'noktali';
 
     window.applyZemin = function(cColor, cPattern) {
@@ -9457,5 +9457,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
+
+    window.applyZemin(currentColor, currentPattern);
 });
 
