@@ -9374,7 +9374,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnBack = document.getElementById('btn-t-back');
     
     let currentColor = 'krem';
-    let currentPattern = 'noktali';
+    let currentPattern = 'duz';
 
     window.applyZemin = function(cColor, cPattern) {
         let bgColor = '#1e1e2e';

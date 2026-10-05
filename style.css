@@ -98,73 +98,73 @@ html, body {
     transform: translateY(0);
 }
 
-/* Premium Buton Stili (Eğlenceli, 3D Oyun Butonu Tarzı) */
+/* Premium Buton Stili (Eğlenceli, Soft Oyun Butonu Tarzı) */
 .tool-button {
-    background: #ffb142 !important; /* Canlı turuncu/sarı */
-    border: 3px solid #ffda79 !important;
-    border-bottom: 5px solid #cc8e35 !important; /* 3D derinlik */
-    color: #2c2c54 !important; 
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important; 
+    background: #38bdf8 !important; /* Soft Gökyüzü Mavisi (Matte Blue) */
+    border: 3px solid #7dd3fc !important;
+    border-bottom: 5px solid #0284c7 !important; /* 3D derinlik */
+    color: #ffffff !important; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15) !important; 
     
-    border-radius: 14px; 
+    border-radius: 12px; 
     padding: 12px 18px;
     font-size: 16px;
-    font-weight: 800;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.15s ease-in-out;
     min-width: 120px; 
-    text-shadow: none !important;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.15) !important;
 }
 
 /* Buton üzerine gelince (Hover) */
 .tool-button:hover {
-    background: #ffcc70 !important; 
-    border-color: #ffeaa7 !important;
-    color: #2c2c54 !important;
-    box-shadow: 0 6px 15px rgba(255, 177, 66, 0.5) !important;
+    background: #7dd3fc !important; 
+    border-color: #bae6fd !important;
+    color: #0369a1 !important;
+    box-shadow: 0 6px 15px rgba(56, 189, 248, 0.4) !important;
     transform: translateY(-2px);
 }
 
 .tool-button:active {
     transform: translateY(4px);
-    border-bottom: 1px solid #cc8e35 !important;
+    border-bottom: 1px solid #0284c7 !important;
 }
 
-/* Seçili (Aktif) Araç Butonu - Canlı Yeşil */
+/* Seçili (Aktif) Araç Butonu - Soft Zümrüt Yeşili */
 .tool-button.active {
-    background: #33d9b2 !important; 
-    border: 3px solid #78e08f !important;
-    border-bottom: 5px solid #218c74 !important;
-    color: #0b1e19 !important;
-    box-shadow: 0 0 15px rgba(51, 217, 178, 0.6) !important;
+    background: #34d399 !important; 
+    border: 3px solid #6ee7b7 !important;
+    border-bottom: 5px solid #059669 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 15px rgba(52, 211, 153, 0.5) !important;
 }
 
-/* Alt menü butonlarını (.tool-button-sub) da cıvıl cıvıl yapalım */
+/* Alt menü butonlarını (.tool-button-sub) - Soft Turkuaz */
 .tool-button-sub {
-    background: #34ace0 !important; /* Canlı Mavi */
-    color: #fff !important;
-    border: 2px solid #70a1ff !important;
-    border-bottom: 4px solid #227093 !important;
+    background: #14b8a6 !important; /* Matte Teal */
+    color: #ffffff !important;
+    border: 2px solid #2dd4bf !important;
+    border-bottom: 4px solid #0f766e !important;
     
     padding: 8px;
     border-radius: 10px;
     cursor: pointer;
-    font-weight: 700;
+    font-weight: 600;
     transition: all 0.15s ease-in-out;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.2) !important;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.15) !important;
 }
 
 .tool-button-sub.active, .tool-button-sub:hover {
-    background: #ff5252 !important; /* Vurgulu Kırmızı/Pembe */
-    color: #fff !important;
-    border-color: #ff793f !important;
-    border-bottom: 4px solid #b33939 !important;
+    background: #f43f5e !important; /* Soft Kırmızımsı Pembe */
+    color: #ffffff !important;
+    border-color: #fb7185 !important;
+    border-bottom: 4px solid #be123c !important;
     transform: translateY(-2px);
 }
 
 .tool-button-sub:active {
     transform: translateY(3px);
-    border-bottom: 1px solid #227093 !important;
+    border-bottom: 1px solid #be123c !important;
 }
 
 /* Kalem ve Silgi için özel imleçler (Temsili araç) */
