@@ -1,4 +1,4 @@
-﻿/* Tüm butonlar için ortak sevimli yazı stili */
+/* Tüm butonlar için ortak sevimli yazı stili */
 .tool-button, .tool-button-sub, #oyunlar-options div, button {
     font-family: 'Fredoka', sans-serif !important;
     font-weight: 600;
@@ -98,63 +98,73 @@ html, body {
     transform: translateY(0);
 }
 
-/* Premium Buton Stili (İnatçı Eski Renkleri Ezen Zırhlı Versiyon) */
+/* Premium Buton Stili (Eğlenceli, 3D Oyun Butonu Tarzı) */
 .tool-button {
-    /* ?? !important zırhı ile eski HTML renkleri kesin olarak ezilir ?? */
-    background: rgba(255, 255, 255, 0.05) !important; 
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    color: #cdd6f4 !important; 
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important; 
+    background: #ffb142 !important; /* Canlı turuncu/sarı */
+    border: 3px solid #ffda79 !important;
+    border-bottom: 5px solid #cc8e35 !important; /* 3D derinlik */
+    color: #2c2c54 !important; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important; 
     
-    /* Sağ paneldeki küçük butonları bozmamak için boyutlara !important koymuyoruz */
-    border-radius: 12px; 
+    border-radius: 14px; 
     padding: 12px 18px;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 800;
     cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.15s ease-in-out;
     min-width: 120px; 
+    text-shadow: none !important;
 }
 
 /* Buton üzerine gelince (Hover) */
 .tool-button:hover {
-    background: rgba(137, 180, 250, 0.15) !important; 
-    border-color: #89b4fa !important;
-    color: #89b4fa !important;
-    box-shadow: 0 6px 15px rgba(137, 180, 250, 0.2) !important;
-    
+    background: #ffcc70 !important; 
+    border-color: #ffeaa7 !important;
+    color: #2c2c54 !important;
+    box-shadow: 0 6px 15px rgba(255, 177, 66, 0.5) !important;
     transform: translateY(-2px);
 }
 
 .tool-button:active {
-    transform: scale(0.92);
+    transform: translateY(4px);
+    border-bottom: 1px solid #cc8e35 !important;
 }
 
-/* Seçili (Aktif) Araç Butonu - Tam Pastel Mavi */
+/* Seçili (Aktif) Araç Butonu - Canlı Yeşil */
 .tool-button.active {
-    background: #89b4fa !important; 
-    color: #1e1e2e !important; /* Koyu metin, tam zıtlık */
-    border-color: #89b4fa !important;
-    box-shadow: 0 0 20px rgba(137, 180, 250, 0.5) !important;
+    background: #33d9b2 !important; 
+    border: 3px solid #78e08f !important;
+    border-bottom: 5px solid #218c74 !important;
+    color: #0b1e19 !important;
+    box-shadow: 0 0 15px rgba(51, 217, 178, 0.6) !important;
 }
 
-/* Alt menü butonlarını (.tool-button-sub) da zırhlayalım */
+/* Alt menü butonlarını (.tool-button-sub) da cıvıl cıvıl yapalım */
 .tool-button-sub {
-    background: rgba(255, 255, 255, 0.05) !important;
-    color: #cdd6f4 !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: #34ace0 !important; /* Canlı Mavi */
+    color: #fff !important;
+    border: 2px solid #70a1ff !important;
+    border-bottom: 4px solid #227093 !important;
     
     padding: 8px;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
-    font-weight: bold;
-    transition: all 0.2s;
+    font-weight: 700;
+    transition: all 0.15s ease-in-out;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2) !important;
 }
 
 .tool-button-sub.active, .tool-button-sub:hover {
-    background: rgba(137, 180, 250, 0.2) !important;
-    color: #89b4fa !important;
-    border-color: #89b4fa !important;
+    background: #ff5252 !important; /* Vurgulu Kırmızı/Pembe */
+    color: #fff !important;
+    border-color: #ff793f !important;
+    border-bottom: 4px solid #b33939 !important;
+    transform: translateY(-2px);
+}
+
+.tool-button-sub:active {
+    transform: translateY(3px);
+    border-bottom: 1px solid #227093 !important;
 }
 
 /* Kalem ve Silgi için özel imleçler (Temsili araç) */
