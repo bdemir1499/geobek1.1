@@ -102,26 +102,26 @@ html, body {
    TEMA DEĞİŞKENLERİ (DINAMIK BUTON RENKLERI)
    ========================================= */
 :root, body.theme-krem {
-  --btn-bg: #38bdf8; 
-  --btn-border: #7dd3fc;
-  --btn-shadow: #0284c7;
-  --btn-text: #ffffff;
+  --btn-bg: #e5d5b5; /* Biraz daha koyu krem / Latte */
+  --btn-border: #f2e5cb;
+  --btn-shadow: #cdae82;
+  --btn-text: #4a3f31; /* Okunaklı olması için koyu kahve */
   
-  --btn-hover-bg: #7dd3fc;
-  --btn-hover-border: #bae6fd;
-  --btn-hover-text: #0369a1;
+  --btn-hover-bg: #dccaa7;
+  --btn-hover-border: #e5d5b5;
+  --btn-hover-text: #362d22;
   
-  --btn-active-bg: #34d399;
-  --btn-active-border: #6ee7b7;
-  --btn-active-shadow: #059669;
+  --btn-active-bg: #8ba888; /* Seçiliyken kremle uyumlu adaçayı yeşili */
+  --btn-active-border: #a1bfa1;
+  --btn-active-shadow: #637d61;
 
-  --btn-sub-bg: #14b8a6;
-  --btn-sub-border: #2dd4bf;
-  --btn-sub-shadow: #0f766e;
+  --btn-sub-bg: #d5c29f;
+  --btn-sub-border: #e5d5b5;
+  --btn-sub-shadow: #b8a176;
   
-  --btn-sub-hover-bg: #f43f5e;
-  --btn-sub-hover-border: #fb7185;
-  --btn-sub-hover-shadow: #be123c;
+  --btn-sub-hover-bg: #8ba888;
+  --btn-sub-hover-border: #a1bfa1;
+  --btn-sub-hover-shadow: #637d61;
 }
 
 body.theme-siyah {
