@@ -8285,7 +8285,7 @@ window.Scene3D = {
 
             const previewGeo = this.createGeometry(this.activeTool, 0.1);
             if (this.activeTool.startsWith('prism') || this.activeTool.startsWith('pyramid')) previewGeo.rotateX(Math.PI / 2);
-            this.previewMesh = new THREE.Mesh(previewGeo, new THREE.MeshBasicMaterial({ color: 0x00ffcc, wireframe: true, transparent: true, opacity: 0.5 }));
+            this.previewMesh = new THREE.Mesh(previewGeo, new THREE.MeshBasicMaterial({ color: (typeof window.get3DMainColor === 'function' ? window.get3DMainColor() : 0x00ffcc), wireframe: true, transparent: true, opacity: 0.5 }));
             this.previewMesh.position.copy(this.startPoint);
 
             this.scene.add(this.previewMesh);
@@ -8391,8 +8391,8 @@ window.Scene3D = {
             this.scene.remove(this.previewMesh); this.previewMesh.geometry.dispose(); this.previewMesh = null;
 
             const isSphere = this.activeTool === 'sphere';
-            const mainMaterial = new THREE.MeshPhongMaterial({ color: 0x00ffcc, shininess: 100, specular: 0x111111, transparent: !isSphere, opacity: isSphere ? 1.0 : 0.4, depthWrite: isSphere, side: THREE.DoubleSide });
-            const edgeMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 1.0 });
+            const mainMaterial = new THREE.MeshPhongMaterial({ color: (typeof window.get3DMainColor === 'function' ? window.get3DMainColor() : 0x00ffcc), shininess: 100, specular: 0x111111, transparent: !isSphere, opacity: isSphere ? 1.0 : 0.4, depthWrite: isSphere, side: THREE.DoubleSide });
+            const edgeMaterial = new THREE.LineBasicMaterial({ color: (typeof window.get3DEdgeColor === 'function' ? window.get3DEdgeColor() : 0xffffff), transparent: true, opacity: 1.0 });
 
             let solidShape = null;
             // ?? KONÃ¯Â¿Â½ Ã¯Â¿Â½Ã¯Â¿Â½ZÃ¯Â¿Â½MÃ¯Â¿Â½: Koniyi Ã¯Â¿Â½zel motorla aÃ¯Â¿Â½ ki piramide dÃ¯Â¿Â½nÃ¯Â¿Â½Ã¯Â¿Â½mesin!
@@ -8518,8 +8518,8 @@ window.Scene3D = {
     addShapeFromNetwork: function (strokeData) {
         if (!this.isInit) this.init();
         const isSphere = strokeData.shapeType === 'sphere';
-        const mainMaterial = new THREE.MeshPhongMaterial({ color: 0x00ffcc, shininess: 100, specular: 0x111111, transparent: !isSphere, opacity: isSphere ? 1.0 : 0.4, depthWrite: isSphere, side: THREE.DoubleSide });
-        const edgeMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 1.0 });
+        const mainMaterial = new THREE.MeshPhongMaterial({ color: (typeof window.get3DMainColor === 'function' ? window.get3DMainColor() : 0x00ffcc), shininess: 100, specular: 0x111111, transparent: !isSphere, opacity: isSphere ? 1.0 : 0.4, depthWrite: isSphere, side: THREE.DoubleSide });
+        const edgeMaterial = new THREE.LineBasicMaterial({ color: (typeof window.get3DEdgeColor === 'function' ? window.get3DEdgeColor() : 0xffffff), transparent: true, opacity: 1.0 });
 
         let solidShape = null;
         // ?? KONÃ¯Â¿Â½ Ã¯Â¿Â½Ã¯Â¿Â½ZÃ¯Â¿Â½MÃ¯Â¿Â½: AÃ¯Â¿Â½dan gelen koniyi de Ã¯Â¿Â½zel motorla Ã¯Â¿Â½iz!
@@ -9370,6 +9370,20 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentColor = 'krem';
     let currentPattern = 'duz';
 
+    window.get3DMainColor = function() {
+        if (currentColor === 'siyah') return 0x00ffcc; // Cyan
+        if (currentColor === 'krem') return 0x0284c7; // Deep blue
+        if (currentColor === 'yesil') return 0xfcd34d; // Yellow/gold
+        return 0x00ffcc;
+    };
+
+    window.get3DEdgeColor = function() {
+        if (currentColor === 'siyah') return 0xffffff;
+        if (currentColor === 'krem') return 0x0f172a; // Dark navy for contrast
+        if (currentColor === 'yesil') return 0xffffff;
+        return 0xffffff;
+    };
+
     window.applyZemin = function(cColor, cPattern) {
         let bgColor = '#1e1e2e';
         let pColor = 'rgba(255,255,255,0.15)'; 
@@ -9395,6 +9409,21 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             document.body.style.backgroundSize = '30px 51.96px'; 
             document.body.style.backgroundPosition = '0 0, 15px 25.98px';
+        }
+
+        // --- 3D CİSİMLERİN RENGİNİ DİNAMİK GÜNCELLE ---
+        if (window.Scene3D && window.Scene3D.scene) {
+            const mColor = window.get3DMainColor();
+            const eColor = window.get3DEdgeColor();
+            window.Scene3D.scene.traverse((child) => {
+                if (child.isMesh && child.material && child.material.type === 'MeshPhongMaterial') {
+                    child.material.color.setHex(mColor);
+                }
+                if (child.isLineSegments && child.material && child.material.type === 'LineBasicMaterial') {
+                    child.material.color.setHex(eColor);
+                }
+            });
+            if (typeof window.redrawAllStrokes === 'function') window.redrawAllStrokes();
         }
     };
 
