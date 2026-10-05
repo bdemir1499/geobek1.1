@@ -9380,9 +9380,9 @@ document.addEventListener('DOMContentLoaded', () => {
         let bgColor = '#1e1e2e';
         let pColor = 'rgba(255,255,255,0.15)'; 
         
-        if (cColor === 'siyah') { bgColor = '#1e1e2e'; pColor = 'rgba(205, 214, 244, 0.15)'; }
-        if (cColor === 'krem') { bgColor = '#fdf6e3'; pColor = 'rgba(0, 0, 0, 0.15)'; }
-        if (cColor === 'yesil') { bgColor = '#2a5a3b'; pColor = 'rgba(255, 255, 255, 0.2)'; }
+        if (cColor === 'siyah') { bgColor = '#1e1e2e'; pColor = 'rgba(205, 214, 244, 0.15)'; document.body.className = 'theme-siyah'; }
+        if (cColor === 'krem') { bgColor = '#fdf6e3'; pColor = 'rgba(0, 0, 0, 0.15)'; document.body.className = 'theme-krem'; }
+        if (cColor === 'yesil') { bgColor = '#2a5a3b'; pColor = 'rgba(255, 255, 255, 0.2)'; document.body.className = 'theme-yesil'; }
 
         document.body.style.backgroundColor = bgColor;
         

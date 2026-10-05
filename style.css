@@ -98,12 +98,84 @@ html, body {
     transform: translateY(0);
 }
 
+/* =========================================
+   TEMA DEĞİŞKENLERİ (DINAMIK BUTON RENKLERI)
+   ========================================= */
+:root, body.theme-krem {
+  --btn-bg: #38bdf8; 
+  --btn-border: #7dd3fc;
+  --btn-shadow: #0284c7;
+  --btn-text: #ffffff;
+  
+  --btn-hover-bg: #7dd3fc;
+  --btn-hover-border: #bae6fd;
+  --btn-hover-text: #0369a1;
+  
+  --btn-active-bg: #34d399;
+  --btn-active-border: #6ee7b7;
+  --btn-active-shadow: #059669;
+
+  --btn-sub-bg: #14b8a6;
+  --btn-sub-border: #2dd4bf;
+  --btn-sub-shadow: #0f766e;
+  
+  --btn-sub-hover-bg: #f43f5e;
+  --btn-sub-hover-border: #fb7185;
+  --btn-sub-hover-shadow: #be123c;
+}
+
+body.theme-siyah {
+  --btn-bg: #374151;
+  --btn-border: #4b5563;
+  --btn-shadow: #1f2937;
+  --btn-text: #10b981; /* Neon Yeşil */
+  
+  --btn-hover-bg: #4b5563;
+  --btn-hover-border: #6b7280;
+  --btn-hover-text: #34d399;
+  
+  --btn-active-bg: #10b981;
+  --btn-active-border: #34d399;
+  --btn-active-shadow: #047857;
+
+  --btn-sub-bg: #1f2937;
+  --btn-sub-border: #374151;
+  --btn-sub-shadow: #111827;
+  
+  --btn-sub-hover-bg: #f59e0b;
+  --btn-sub-hover-border: #fbbf24;
+  --btn-sub-hover-shadow: #b45309;
+}
+
+body.theme-yesil {
+  --btn-bg: #b45309; /* Ahşap rengi */
+  --btn-border: #d97706;
+  --btn-shadow: #78350f;
+  --btn-text: #fff8dc; /* Tebeşir beyazı */
+  
+  --btn-hover-bg: #d97706;
+  --btn-hover-border: #f59e0b;
+  --btn-hover-text: #ffffff;
+  
+  --btn-active-bg: #fcd34d;
+  --btn-active-border: #fde68a;
+  --btn-active-shadow: #d97706;
+
+  --btn-sub-bg: #78350f;
+  --btn-sub-border: #92400e;
+  --btn-sub-shadow: #451a03;
+  
+  --btn-sub-hover-bg: #0ea5e9;
+  --btn-sub-hover-border: #38bdf8;
+  --btn-sub-hover-shadow: #0284c7;
+}
+
 /* Premium Buton Stili (Eğlenceli, Soft Oyun Butonu Tarzı) */
 .tool-button {
-    background: #38bdf8 !important; /* Soft Gökyüzü Mavisi (Matte Blue) */
-    border: 3px solid #7dd3fc !important;
-    border-bottom: 5px solid #0284c7 !important; /* 3D derinlik */
-    color: #ffffff !important; 
+    background: var(--btn-bg) !important;
+    border: 3px solid var(--btn-border) !important;
+    border-bottom: 5px solid var(--btn-shadow) !important;
+    color: var(--btn-text) !important; 
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15) !important; 
     
     border-radius: 12px; 
@@ -118,33 +190,33 @@ html, body {
 
 /* Buton üzerine gelince (Hover) */
 .tool-button:hover {
-    background: #7dd3fc !important; 
-    border-color: #bae6fd !important;
-    color: #0369a1 !important;
-    box-shadow: 0 6px 15px rgba(56, 189, 248, 0.4) !important;
+    background: var(--btn-hover-bg) !important; 
+    border-color: var(--btn-hover-border) !important;
+    color: var(--btn-hover-text) !important;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2) !important;
     transform: translateY(-2px);
 }
 
 .tool-button:active {
     transform: translateY(4px);
-    border-bottom: 1px solid #0284c7 !important;
+    border-bottom: 1px solid var(--btn-shadow) !important;
 }
 
-/* Seçili (Aktif) Araç Butonu - Soft Zümrüt Yeşili */
+/* Seçili (Aktif) Araç Butonu */
 .tool-button.active {
-    background: #34d399 !important; 
-    border: 3px solid #6ee7b7 !important;
-    border-bottom: 5px solid #059669 !important;
+    background: var(--btn-active-bg) !important; 
+    border: 3px solid var(--btn-active-border) !important;
+    border-bottom: 5px solid var(--btn-active-shadow) !important;
     color: #ffffff !important;
-    box-shadow: 0 0 15px rgba(52, 211, 153, 0.5) !important;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Alt menü butonlarını (.tool-button-sub) - Soft Turkuaz */
+/* Alt menü butonları */
 .tool-button-sub {
-    background: #14b8a6 !important; /* Matte Teal */
-    color: #ffffff !important;
-    border: 2px solid #2dd4bf !important;
-    border-bottom: 4px solid #0f766e !important;
+    background: var(--btn-sub-bg) !important;
+    color: var(--btn-text) !important;
+    border: 2px solid var(--btn-sub-border) !important;
+    border-bottom: 4px solid var(--btn-sub-shadow) !important;
     
     padding: 8px;
     border-radius: 10px;
@@ -155,16 +227,16 @@ html, body {
 }
 
 .tool-button-sub.active, .tool-button-sub:hover {
-    background: #f43f5e !important; /* Soft Kırmızımsı Pembe */
+    background: var(--btn-sub-hover-bg) !important; 
     color: #ffffff !important;
-    border-color: #fb7185 !important;
-    border-bottom: 4px solid #be123c !important;
+    border-color: var(--btn-sub-hover-border) !important;
+    border-bottom: 4px solid var(--btn-sub-hover-shadow) !important;
     transform: translateY(-2px);
 }
 
 .tool-button-sub:active {
     transform: translateY(3px);
-    border-bottom: 1px solid #be123c !important;
+    border-bottom: 1px solid var(--btn-sub-hover-shadow) !important;
 }
 
 /* Kalem ve Silgi için özel imleçler (Temsili araç) */
