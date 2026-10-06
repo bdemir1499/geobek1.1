@@ -61,12 +61,12 @@ for (let i = 0; i <= 180; i++) {
     // Outer numbers (180 on left, 0 on right)
     let tx1 = cx + textRadiusOuter * Math.cos(angle);
     let ty1 = cy - textRadiusOuter * Math.sin(angle);
-    svg += `<text x="${tx1}" y="${ty1}" fill="black" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" dominant-baseline="middle" transform="rotate(${90 - i}, ${tx1}, ${ty1})">${180 - i}</text>`;
+    svg += `<text x="${tx1}" y="${ty1}" fill="black" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" dominant-baseline="middle" transform="rotate(${90 - i}, ${tx1}, ${ty1})">${180 - i}</text>`;
     
     // Inner numbers (0 on left, 180 on right)
     let tx2 = cx + textRadiusInner * Math.cos(angle);
     let ty2 = cy - textRadiusInner * Math.sin(angle);
-    svg += `<text x="${tx2}" y="${ty2}" fill="black" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" dominant-baseline="middle" transform="rotate(${90 - i}, ${tx2}, ${ty2})">${i}</text>`;
+    svg += `<text x="${tx2}" y="${ty2}" fill="black" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" dominant-baseline="middle" transform="rotate(${90 - i}, ${tx2}, ${ty2})">${i}</text>`;
   }
 }
 
