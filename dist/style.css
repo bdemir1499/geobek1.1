@@ -1,4 +1,4 @@
-﻿/* Tüm butonlar için ortak sevimli yazı stili */
+/* Tüm butonlar için ortak sevimli yazı stili */
 .tool-button, .tool-button-sub, #oyunlar-options div, button {
     font-family: 'Fredoka', sans-serif !important;
     font-weight: 600;
@@ -98,63 +98,145 @@ html, body {
     transform: translateY(0);
 }
 
-/* Premium Buton Stili (İnatçı Eski Renkleri Ezen Zırhlı Versiyon) */
+/* =========================================
+   TEMA DEĞİŞKENLERİ (DINAMIK BUTON RENKLERI)
+   ========================================= */
+:root, body.theme-krem {
+  --btn-bg: #e5d5b5; /* Biraz daha koyu krem / Latte */
+  --btn-border: #f2e5cb;
+  --btn-shadow: #cdae82;
+  --btn-text: #4a3f31; /* Okunaklı olması için koyu kahve */
+  
+  --btn-hover-bg: #dccaa7;
+  --btn-hover-border: #e5d5b5;
+  --btn-hover-text: #362d22;
+  
+  --btn-active-bg: #8ba888; /* Seçiliyken kremle uyumlu adaçayı yeşili */
+  --btn-active-border: #a1bfa1;
+  --btn-active-shadow: #637d61;
+
+  --btn-sub-bg: #d5c29f;
+  --btn-sub-border: #e5d5b5;
+  --btn-sub-shadow: #b8a176;
+  
+  --btn-sub-hover-bg: #8ba888;
+  --btn-sub-hover-border: #a1bfa1;
+  --btn-sub-hover-shadow: #637d61;
+}
+
+body.theme-siyah {
+  --btn-bg: #374151;
+  --btn-border: #4b5563;
+  --btn-shadow: #1f2937;
+  --btn-text: #10b981; /* Neon Yeşil */
+  
+  --btn-hover-bg: #4b5563;
+  --btn-hover-border: #6b7280;
+  --btn-hover-text: #34d399;
+  
+  --btn-active-bg: #10b981;
+  --btn-active-border: #34d399;
+  --btn-active-shadow: #047857;
+
+  --btn-sub-bg: #1f2937;
+  --btn-sub-border: #374151;
+  --btn-sub-shadow: #111827;
+  
+  --btn-sub-hover-bg: #f59e0b;
+  --btn-sub-hover-border: #fbbf24;
+  --btn-sub-hover-shadow: #b45309;
+}
+
+body.theme-yesil {
+  --btn-bg: #3b7b4f; /* Tahtadan biraz daha açık yeşil */
+  --btn-border: #4d9c66;
+  --btn-shadow: #21492f;
+  --btn-text: #ffffff; 
+  
+  --btn-hover-bg: #458c5a;
+  --btn-hover-border: #5cb578;
+  --btn-hover-text: #ffffff;
+  
+  --btn-active-bg: #fcd34d; /* Seçiliyken dikkat çekici sarı/turuncu */
+  --btn-active-border: #fde68a;
+  --btn-active-shadow: #d97706;
+
+  --btn-sub-bg: #326943;
+  --btn-sub-border: #3f8455;
+  --btn-sub-shadow: #1c3c26;
+  
+  --btn-sub-hover-bg: #458c5a;
+  --btn-sub-hover-border: #5cb578;
+  --btn-sub-hover-shadow: #21492f;
+}
+
+/* Premium Buton Stili (Eğlenceli, Soft Oyun Butonu Tarzı) */
 .tool-button {
-    /* ?? !important zırhı ile eski HTML renkleri kesin olarak ezilir ?? */
-    background: rgba(255, 255, 255, 0.05) !important; 
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    color: #cdd6f4 !important; 
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important; 
+    background: var(--btn-bg) !important;
+    border: 3px solid var(--btn-border) !important;
+    border-bottom: 5px solid var(--btn-shadow) !important;
+    color: var(--btn-text) !important; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15) !important; 
     
-    /* Sağ paneldeki küçük butonları bozmamak için boyutlara !important koymuyoruz */
     border-radius: 12px; 
     padding: 12px 18px;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.15s ease-in-out;
     min-width: 120px; 
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.15) !important;
 }
 
 /* Buton üzerine gelince (Hover) */
 .tool-button:hover {
-    background: rgba(137, 180, 250, 0.15) !important; 
-    border-color: #89b4fa !important;
-    color: #89b4fa !important;
-    box-shadow: 0 6px 15px rgba(137, 180, 250, 0.2) !important;
-    
+    background: var(--btn-hover-bg) !important; 
+    border-color: var(--btn-hover-border) !important;
+    color: var(--btn-hover-text) !important;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2) !important;
     transform: translateY(-2px);
 }
 
 .tool-button:active {
-    transform: scale(0.92);
+    transform: translateY(4px);
+    border-bottom: 1px solid var(--btn-shadow) !important;
 }
 
-/* Seçili (Aktif) Araç Butonu - Tam Pastel Mavi */
+/* Seçili (Aktif) Araç Butonu */
 .tool-button.active {
-    background: #89b4fa !important; 
-    color: #1e1e2e !important; /* Koyu metin, tam zıtlık */
-    border-color: #89b4fa !important;
-    box-shadow: 0 0 20px rgba(137, 180, 250, 0.5) !important;
+    background: var(--btn-active-bg) !important; 
+    border: 3px solid var(--btn-active-border) !important;
+    border-bottom: 5px solid var(--btn-active-shadow) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Alt menü butonlarını (.tool-button-sub) da zırhlayalım */
+/* Alt menü butonları */
 .tool-button-sub {
-    background: rgba(255, 255, 255, 0.05) !important;
-    color: #cdd6f4 !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: var(--btn-sub-bg) !important;
+    color: var(--btn-text) !important;
+    border: 2px solid var(--btn-sub-border) !important;
+    border-bottom: 4px solid var(--btn-sub-shadow) !important;
     
     padding: 8px;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
-    font-weight: bold;
-    transition: all 0.2s;
+    font-weight: 600;
+    transition: all 0.15s ease-in-out;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.15) !important;
 }
 
 .tool-button-sub.active, .tool-button-sub:hover {
-    background: rgba(137, 180, 250, 0.2) !important;
-    color: #89b4fa !important;
-    border-color: #89b4fa !important;
+    background: var(--btn-sub-hover-bg) !important; 
+    color: #ffffff !important;
+    border-color: var(--btn-sub-hover-border) !important;
+    border-bottom: 4px solid var(--btn-sub-hover-shadow) !important;
+    transform: translateY(-2px);
+}
+
+.tool-button-sub:active {
+    transform: translateY(3px);
+    border-bottom: 1px solid var(--btn-sub-hover-shadow) !important;
 }
 
 /* Kalem ve Silgi için özel imleçler (Temsili araç) */
@@ -428,52 +510,6 @@ body.cursor-eraser .eraser-cursor-preview {
     font-size: 12px;      /* Yazıyı biraz küçült */
     padding: 8px 2px;     /* İç boşluğu azalt */
     height: auto;         /* İçeriğe göre uzasın */
-}
-
-/* Sadece "Resim Yükle" butonunun yazısını küçült ve sığdır */
-#btn-upload {
-    font-size: 10px !important;   /* Diğerlerinden (12px) daha küçük yap */
-    line-height: 1.1 !important;  /* Satırları birbirine yaklaştır */
-    padding: 4px 1px !important;  /* Kenar boşluklarını azaltarak yer aç */
-    min-height: 50px;             /* Yazı sığmazsa buton aşağı doğru uzasın */
-}
-
-/* --- RESİM YÜKLEME BUTONU ÖZELLEŞTİRMESİ --- */
-#btn-upload {
-    /* 1. Orijinal yazıyı görünmez yap */
-    color: transparent !important;
-    position: relative; /* Yeni yazı buna göre hizalanacak */
-    
-    /* 2. Buton boyutunu ayarla */
-    height: auto !important;
-    min-height: 65px; /* 3 satır sığacak kadar yükseklik */
-    padding: 0 !important;
-    
-    /* Hizalama */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* 3. Yeni Yazıyı Yerleştir */
-#btn-upload::after {
-    /* \00000a kodu CSS'de "Alt Satıra Geç" (Enter) demektir */
-    content: "Resim\00000aDosya(PDFKitap)\00000aYükle";
-    
-    /* ?? YENİ TEMA RENGİ: Mat Beyaz/Gri ?? */
-    color: #cdd6f4 !important; 
-    
-    font-size: 10px;
-    font-weight: bold;
-    line-height: 1.3; 
-    text-align: center;
-    white-space: pre; 
-    
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
 }
 
 
@@ -1047,24 +1083,29 @@ canvas {
    ========================================= */
 #slider-container {
     display: none;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: absolute;
+    left: 15px; /* Sol panele hizalı */
+    bottom: 20px; /* Ekranın sol altına */
+    width: 140px; /* Sol panel genişliğini geçmesin */
+    background: var(--btn-bg, rgba(30,30,46,0.8));
+    border: 2px solid var(--btn-border, rgba(255,255,255,0.2));
+    border-bottom: 4px solid var(--btn-shadow, rgba(0,0,0,0.3));
     border-radius: 12px;
     padding: 10px;
-    margin-top: 5px;
     flex-direction: column;
     align-items: center;
     gap: 8px;
     box-sizing: border-box;
-    width: 100%;
+    z-index: 50;
 }
 
 #slider-container label {
     font-family: 'Fredoka', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    color: #00ffcc;
-    text-shadow: 0 0 5px rgba(0, 255, 204, 0.5);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--btn-text, #ffffff);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    text-align: center;
 }
 
 #shape-slider {

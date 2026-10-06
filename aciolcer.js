@@ -1,4 +1,4 @@
-﻿
+
 
 // --- aciolcer.js (Referans Dondurma ile Zıplama Engelleyici Sürüm) ---
 
@@ -88,38 +88,6 @@ window.AciolcerTool = {
          if (!this.markingsElement) return;
         this.markingsElement.innerHTML = '';
         this.markingsElement.appendChild(this.redLine);
-
-        const radius = this.state.radius;
-        const centerX = this.state.radius;
-
-        for (let angle = 0; angle <= 180; angle += 10) {
-            const angleRad = angle * (Math.PI / 180);
-            const labelRadius = radius + 20; 
-            const labelX = centerX + Math.cos(angleRad) * labelRadius;
-            const labelY = radius - Math.sin(angleRad) * labelRadius;
-
-            const label = document.createElement('div');
-            label.className = 'aciolcer-label';
-            label.innerText = angle + '°';
-            label.style.left = `${labelX}px`;
-            label.style.top = `${labelY}px`;
-            this.markingsElement.appendChild(label);
-        }
-        
-        for (let angle = 0; angle <= 180; angle += 5) {
-            const tick = document.createElement('div');
-            tick.className = 'aciolcer-tick';
-            const isLarge = (angle % 10 === 0);
-            tick.classList.add(isLarge ? 'large' : 'small');
-            const angleRad = angle * (Math.PI / 180);
-            const tickCenterRadius = radius - (isLarge ? 7.5 : 4); 
-            const tickX = centerX + Math.cos(angleRad) * tickCenterRadius;
-            const tickY = radius - Math.sin(angleRad) * tickCenterRadius;
-            tick.style.left = `${tickX}px`;
-            tick.style.top = `${tickY}px`;
-            tick.style.transform = `translate(-50%, -50%) rotate(${-angle + 90}deg)`;
-            this.markingsElement.appendChild(tick);
-        }
     },
 
     toggle: function() {
@@ -157,7 +125,7 @@ window.AciolcerTool = {
             this.redLine.style.transition = 'transform 0.05s ease-out';
             this.redLine.style.transform = 'rotate(0deg)';
             this.drawHandle.style.transition = 'transform 0.05s ease-out';
-            this.drawHandle.style.transform = 'translateX(-50%) translate(0px, 0px)';
+            this.drawHandle.style.transform = 'translate(-50%, -50%) translate(0px, 0px)';
             this.drawHandleLabel.style.display = 'none';
         }
     },
@@ -170,7 +138,7 @@ window.AciolcerTool = {
         this.aciolcerElement.style.setProperty('--width-px', `${width}px`);
         this.aciolcerElement.style.left = `${this.state.x}px`;
         this.aciolcerElement.style.top = `${this.state.y}px`;
-        this.aciolcerElement.style.transform = `translate(-50%, -100%) rotate(${this.state.angle}deg)`;
+        this.aciolcerElement.style.transform = `translate(-50%, -80.1%) rotate(${this.state.angle}deg)`;
     },
 
     addListeners: function() {
@@ -311,7 +279,7 @@ window.AciolcerTool = {
                 this.redLine.style.transition = 'transform 0.1s ease-out';
                 this.redLine.style.transform = 'rotate(0deg)';
                 this.drawHandle.style.transition = 'transform 0.1s ease-out';
-                this.drawHandle.style.transform = 'translateX(-50%)'; 
+                this.drawHandle.style.transform = 'translate(-50%, -50%)'; 
                 this.drawHandleLabel.style.display = 'none';
             }, 50); 
         }
@@ -343,7 +311,7 @@ window.AciolcerTool = {
         } else {
             localAngleDeg = Math.atan2(-ldy, ldx) * 180 / Math.PI;
         }
-        this.drawHandle.style.transform = `translateX(-50%) translate(${ldx}px, ${ldy + 5}px)`;
+        this.drawHandle.style.transform = `translate(-50%, -50%) translate(${ldx}px, ${ldy}px)`;
         this.drawHandleLabel.style.transform = `translateX(-50%) translate(${ldx}px, ${ldy - 20}px)`;
         this.state.currentDrawAngleLocal = localAngleDeg;
         this.drawHandleLabel.innerText = `${localAngleDeg.toFixed(0)}°`;

@@ -1804,22 +1804,7 @@ function redrawAllStrokes() {
                 }
             }
 
-            // 2. SEÃ¯Â¿Â½Ã¯Â¿Â½LÃ¯Â¿Â½YKEN YEÃ¯Â¿Â½Ã¯Â¿Â½L VE PEMBE KULPLARI Ã¯Â¿Â½Ã¯Â¿Â½Z (ESKÃ¯Â¿Â½ Ã¯Â¿Â½ZELLÃ¯Â¿Â½Ã¯Â¿Â½Ã¯Â¿Â½N GERÃ¯Â¿Â½ GELMESÃ¯Â¿Â½)
-            if (typeof currentTool !== 'undefined' && currentTool === 'move' && selectedItem === stroke) {
-                ctx.save();
-                const cX = stroke.x + stroke.width / 2;
-                const cY = stroke.y + stroke.height / 2;
-                const angleRad = (stroke.rotation || 0) * (Math.PI / 180);
-
-                ctx.translate(cX, cY);
-                ctx.rotate(angleRad);
-
-                // SeÃ¯Â¿Â½im Ã¯Â¿Â½erÃ¯Â¿Â½evesi
-                ctx.strokeStyle = '#00FFCC'; ctx.lineWidth = 2; ctx.setLineDash([5, 5]);
-                ctx.strokeRect(-stroke.width / 2, -stroke.height / 2, stroke.width, stroke.height);
-                ctx.setLineDash([]);
-                ctx.restore();
-            }
+            
         }
         else if (stroke.type === 'rectangle') {
             ctx.save();
@@ -8387,8 +8372,16 @@ window.Scene3D = {
 
         if (wasDrawing && this.previewMesh) {
             const finalScale = this.previewMesh.scale.x || 1;
+            this.scene.remove(this.previewMesh); 
+            this.previewMesh.geometry.dispose(); 
+            this.previewMesh = null;
+
+            // ?? GHOST TRACE FIX: Eğer sürüklenmeden sadece tıklandıysa (çok küçükse) işlemi iptal et
+            if (finalScale < 5) {
+                return;
+            }
+
             const finalRadius = 0.1 * finalScale;
-            this.scene.remove(this.previewMesh); this.previewMesh.geometry.dispose(); this.previewMesh = null;
 
             const isSphere = this.activeTool === 'sphere';
             const mainMaterial = new THREE.MeshPhongMaterial({ color: (typeof window.get3DMainColor === 'function' ? window.get3DMainColor() : 0x00ffcc), shininess: 100, specular: 0x111111, transparent: !isSphere, opacity: isSphere ? 1.0 : 0.4, depthWrite: isSphere, side: THREE.DoubleSide });

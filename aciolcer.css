@@ -1,45 +1,36 @@
-﻿/* --- aciolcer.css (YENİ DOSYA) --- */
+/* --- aciolcer.css (YENİ DOSYA) --- */
 
 /* 1. Ana Konteyner (Yarım Daire) */
 .aciolcer-container {
     position: fixed;
-    /* 2. Madde: Yarım daire (300px genişlik, 150px yükseklik) */
+    /* Resmin orijinal oranı: 750x367. Yükseklik = Genişlik * (367/750) = ~0.4893 */
     width: var(--width-px, 300px);
-    height: var(--radius-px, 150px); 
+    height: calc(var(--width-px, 300px) * 0.4893); 
     
-    /* Başlangıç konumu */
     top: 50%;
     left: 50%;
-    
-    /* 1. Madde: Cetvelle aynı stil */
-    border: 2px solid #00ffff;
-    
-    box-shadow: 0 0 15px #00ffff;
-    
-    /* Yarım daire şekli */
-    border-radius: var(--radius-px, 150px) var(--radius-px, 150px) 0 0;
-    
-    z-index: 5; /* Panel (10) altında, Kanvas (0) üstünde */
+    z-index: 5;
     display: flex;
-    transform-origin: center 100%; /* DÖNME MERKEZİ: Merkez-Alt */
+    
+    /* Dönme merkezi, resmin altındaki cetvel kısmını hesaba katarak %80.1 olarak ayarlandı */
+    transform-origin: 50% 80.1%; 
 }
 
-/* 3. Madde: Sürükleme için gövde */
 .aciolcer-body {
     width: 100%;
     height: 100%;
     position: relative;
     cursor: grab;
-    background: rgba(0, 100, 200, 0.1); /* Çok şeffaf yap */
-    background-image: linear-gradient(45deg, rgba(0, 255, 255, 0.05) 25%, transparent 25%, transparent 75%, rgba(0, 255, 255, 0.05) 75%),
-                      linear-gradient(45deg, rgba(0, 255, 255, 0.05) 25%, transparent 25%, transparent 75%, rgba(0, 255, 255, 0.05) 75%);
-    background-size: 30px 30px;
-    background-position: 0 0, 15px 15px;
     
-    /* Kareli desenle ilgili 3 satır SİLİNDİ */
-    
-    border-radius: var(--radius-px, 150px) var(--radius-px, 150px) 0 0;
-    overflow: visible; 
+    /* Yeni resim arka plan olarak eklendi */
+    background-image: url('RESİMLER/aciolcer_resim.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0;
 }
 .aciolcer-body:active {
     cursor: grabbing;
@@ -97,10 +88,10 @@
 }
 .aciolcer-draw-handle {
     position: absolute;
-    /* DÜZELTME: Başlangıç pozisyonu merkez-alt (JS bunu 'transform' ile ezecek) */
-    bottom: 5px; 
+    /* Çizim sapı tam origin noktasında olmalı */
+    top: 80.1%; 
     left: 50%;
-    transform: translateX(-50%); /* Sadece yatay ortala */
+    transform: translate(-50%, -50%);
     
     /* DÜZELTME: 50ms animasyonu için 'transform' eklendi */
     transition: transform 0.05s ease-out;
@@ -148,8 +139,8 @@
 
 .aciolcer-draw-label {
     position: absolute;
-    /* DÜZELTME: Başlangıç pozisyonu (JS bunu 'transform' ile ezecek) */
-    bottom: 25px; /* Butonun 20px üstünde */
+    /* DÜZELTME: Başlangıç pozisyonu */
+    top: calc(80.1% - 30px); /* Butonun 30px üstünde */
     left: 50%;
     transform: translateX(-50%); /* Sadece yatay ortala */
     
