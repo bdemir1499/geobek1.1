@@ -1,4 +1,4 @@
-﻿// --- pergel.js (Referans Dondurma ile Zıplamayan Nihai Sürüm) ---
+// --- pergel.js (Referans Dondurma ile Zıplamayan Nihai Sürüm) ---
 
 window.PergelTool = {
     // HTML Elementleri
@@ -244,6 +244,18 @@ window.PergelTool = {
                     this.radiusLabel.style.top = `${currPos.y}px`;
                 }
                 this.updateTransform();
+                
+                if (this.previewCtx) {
+                    if (this.previewCanvas.style.display === 'none') this.previewCanvas.style.display = 'block';
+                    this.previewCtx.clearRect(0, 0, this.previewCanvas.width, this.previewCanvas.height);
+                    this.previewCtx.beginPath();
+                    this.previewCtx.arc(this.state.pivot.x, this.state.pivot.y, this.state.radius, 0, 2 * Math.PI, false);
+                    this.previewCtx.strokeStyle = "rgba(255, 105, 180, 0.8)";
+                    this.previewCtx.lineWidth = 2; 
+                    this.previewCtx.setLineDash([5, 5]); 
+                    this.previewCtx.stroke();
+                    this.previewCtx.setLineDash([]); 
+                }
                 break;
             case 'drawing':
                 const d_dx = currPos.x - this.state.pivot.x;
@@ -312,6 +324,27 @@ window.PergelTool = {
         // 3. Boyutlandırma etiketini temizle
         if (this.interactionMode === 'resizing') {
             if (this.radiusLabel) this.radiusLabel.style.display = 'none';
+            
+            // Kesikli önizleme sonrası tam çember çizdir
+            this.state.isDrawing = true;
+            const oldStart = this.state.startAngle;
+            const oldRot = this.state.rotation;
+            
+            this.state.startAngle = 0;
+            this.state.rotation = 360; 
+            
+            this.finalizeDraw();
+            
+            this.state.startAngle = oldStart;
+            this.state.rotation = oldRot;
+            this.state.isDrawing = false;
+            
+            setTimeout(() => {
+                if (this.previewCanvas) this.previewCanvas.style.display = 'none';
+                if (this.previewCtx) {
+                    this.previewCtx.clearRect(0, 0, this.previewCanvas.width, this.previewCanvas.height);
+                }
+            }, 50); 
         }
         
         this.interactionMode = 'none';
