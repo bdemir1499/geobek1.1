@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">
   <defs>
     <linearGradient id="plastic" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="rgba(255, 255, 255, 0.4)" />
-      <stop offset="50%" stop-color="rgba(255, 255, 255, 0.1)" />
-      <stop offset="100%" stop-color="rgba(255, 255, 255, 0.4)" />
+      <stop offset="0%" stop-color="rgba(255, 255, 255, 0.6)" />
+      <stop offset="50%" stop-color="rgba(255, 255, 255, 0.3)" />
+      <stop offset="100%" stop-color="rgba(255, 255, 255, 0.6)" />
     </linearGradient>
     <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
-      <feDropShadow dx="2" dy="5" stdDeviation="4" flood-opacity="0.3" />
+      <feDropShadow dx="2" dy="5" stdDeviation="4" flood-opacity="0.5" />
     </filter>
   </defs>
-<path d="M 20 400 A 380 380 0 0 1 780 400 L 780 440 L 20 440 Z" fill="url(#plastic)" stroke="rgba(0,0,0,0.2)" stroke-width="2" filter="url(#shadow)" /><path d="M 160 400 A 240 240 0 0 1 640 400 L 160 400" fill="transparent" stroke="rgba(0,0,0,0.1)" stroke-width="2" />
+<path d="M 20 400 A 380 380 0 0 1 780 400 L 780 440 L 20 440 Z" fill="url(#plastic)" stroke="rgba(0,0,0,0.3)" stroke-width="2" filter="url(#shadow)" /><path d="M 160 400 A 240 240 0 0 1 640 400 L 160 400" fill="transparent" stroke="rgba(0,0,0,0.1)" stroke-width="2" />
   <circle cx="400" cy="400" r="15" fill="none" stroke="rgba(0,0,0,0.8)" stroke-width="2" />
   <line x1="375" y1="400" x2="425" y2="400" stroke="rgba(0,0,0,0.8)" stroke-width="2" />
   <line x1="400" y1="375" x2="400" y2="400" stroke="rgba(0,0,0,0.8)" stroke-width="2" />

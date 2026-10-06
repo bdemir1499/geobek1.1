@@ -13,18 +13,18 @@ let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${he
 svg += `
   <defs>
     <linearGradient id="plastic" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="rgba(255, 255, 255, 0.4)" />
-      <stop offset="50%" stop-color="rgba(255, 255, 255, 0.1)" />
-      <stop offset="100%" stop-color="rgba(255, 255, 255, 0.4)" />
+      <stop offset="0%" stop-color="rgba(255, 255, 255, 0.6)" />
+      <stop offset="50%" stop-color="rgba(255, 255, 255, 0.3)" />
+      <stop offset="100%" stop-color="rgba(255, 255, 255, 0.6)" />
     </linearGradient>
     <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
-      <feDropShadow dx="2" dy="5" stdDeviation="4" flood-opacity="0.3" />
+      <feDropShadow dx="2" dy="5" stdDeviation="4" flood-opacity="0.5" />
     </filter>
   </defs>
 `;
 
 // Draw the main plastic body
-svg += `<path d="M ${cx - outerRadius} ${cy} A ${outerRadius} ${outerRadius} 0 0 1 ${cx + outerRadius} ${cy} L ${cx + outerRadius} ${height - 10} L ${cx - outerRadius} ${height - 10} Z" fill="url(#plastic)" stroke="rgba(0,0,0,0.2)" stroke-width="2" filter="url(#shadow)" />`;
+svg += `<path d="M ${cx - outerRadius} ${cy} A ${outerRadius} ${outerRadius} 0 0 1 ${cx + outerRadius} ${cy} L ${cx + outerRadius} ${height - 10} L ${cx - outerRadius} ${height - 10} Z" fill="url(#plastic)" stroke="rgba(0,0,0,0.3)" stroke-width="2" filter="url(#shadow)" />`;
 
 // Draw the inner cutout arc
 svg += `<path d="M ${cx - innerRadius} ${cy} A ${innerRadius} ${innerRadius} 0 0 1 ${cx + innerRadius} ${cy} L ${cx - innerRadius} ${cy}" fill="transparent" stroke="rgba(0,0,0,0.1)" stroke-width="2" />`;
