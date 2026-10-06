@@ -3,17 +3,17 @@
 /* 1. Ana Konteyner (Yarım Daire) */
 .aciolcer-container {
     position: fixed;
-    /* Resmin orijinal oranı: 750x367. Yükseklik = Genişlik * (367/750) = ~0.4893 */
+    /* SVG resmin orijinal oranı: 800x450. Yükseklik = Genişlik * (450/800) = 0.5625 */
     width: var(--width-px, 300px);
-    height: calc(var(--width-px, 300px) * 0.4893); 
+    height: calc(var(--width-px, 300px) * 0.5625); 
     
     top: 50%;
     left: 50%;
     z-index: 5;
     display: flex;
     
-    /* Dönme merkezi, resmin altındaki cetvel kısmını hesaba katarak %80.1 olarak ayarlandı */
-    transform-origin: 50% 80.1%; 
+    /* Dönme merkezi, SVG resmin altındaki merkez nokta, yani cy = 400. 400 / 450 = 88.88% */
+    transform-origin: 50% 88.88%; 
 }
 
 .aciolcer-body {
@@ -22,8 +22,8 @@
     position: relative;
     cursor: grab;
     
-    /* Yeni resim arka plan olarak eklendi - kök dizindeki resim kullanılıyor */
-    background-image: url('aciolcer_resim.png');
+    /* Yeni SVG resim arka plan olarak eklendi */
+    background-image: url('aciolcer.svg');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;

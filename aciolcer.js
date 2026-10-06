@@ -138,7 +138,7 @@ window.AciolcerTool = {
         this.aciolcerElement.style.setProperty('--width-px', `${width}px`);
         this.aciolcerElement.style.left = `${this.state.x}px`;
         this.aciolcerElement.style.top = `${this.state.y}px`;
-        this.aciolcerElement.style.transform = `translate(-50%, -80.1%) rotate(${this.state.angle}deg)`;
+        this.aciolcerElement.style.transform = `translate(-50%, -88.88%) rotate(${this.state.angle}deg)`;
     },
 
     addListeners: function() {
