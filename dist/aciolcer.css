@@ -22,8 +22,8 @@
     position: relative;
     cursor: grab;
     
-    /* Yeni resim arka plan olarak eklendi */
-    background-image: url('RESİMLER/aciolcer_resim.png');
+    /* Yeni resim arka plan olarak eklendi - kök dizindeki resim kullanılıyor */
+    background-image: url('aciolcer_resim.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;

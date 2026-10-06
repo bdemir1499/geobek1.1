@@ -523,10 +523,9 @@ body.cursor-eraser .eraser-cursor-preview {
     color: #000000 !important;
 }
 
-/* 2. İç Gövde (Ruler, Gonye, Aciolcer) - ŞEFFAF TOK MAVİ */
+/* 2. İç Gövde (Ruler, Gonye) - ŞEFFAF TOK MAVİ */
 .tool-black-theme .ruler-body, 
-.tool-black-theme .gonye-body, 
-.tool-black-theme .aciolcer-body {
+.tool-black-theme .gonye-body {
     /* SONDAKİ DEĞERİ 0.2 YAPTIK (Çok Şeffaf) */
     background-color: rgba(20, 80, 180, 0.2) !important; 
     
@@ -615,10 +614,9 @@ body.cursor-eraser .eraser-cursor-preview {
 
 /* --- FİZİKSEL ARAÇLAR İÇİN TOK MAVİ TEMA (PROFESYONEL) --- */
 
-/* 1. Cetvel, Gönye, Açıölçer Gövdeleri */
+/* 1. Cetvel, Gönye Gövdeleri */
 .tool-black-theme .ruler-body, 
-.tool-black-theme .gonye-body, 
-.tool-black-theme .aciolcer-body {
+.tool-black-theme .gonye-body {
     /* Tok Mavi Renk ve %50 Şeffaflık (Altı görünsün diye) */
     background-color: rgba(10, 60, 160, 0.5) !important; 
     
