@@ -80,11 +80,13 @@ window.PergelTool = {
         this.previewCanvas.style.top = '0';
         this.previewCanvas.style.left = '0';
         this.previewCanvas.style.pointerEvents = 'none';
-        this.previewCanvas.style.zIndex = '100'; 
+        this.previewCanvas.style.zIndex = '9999'; 
         document.body.appendChild(this.previewCanvas);
         
         this.previewCtx = this.previewCanvas.getContext('2d');
         this.previewCanvas.style.display = 'none'; 
+        this.previewCanvas.style.width = '100vw';
+        this.previewCanvas.style.height = '100vh';
 
         this.addListeners();
         this.updateTransform();
@@ -203,6 +205,10 @@ window.PergelTool = {
         else if (target === this.penResizeHandle) {
             this.interactionMode = 'resizing';
             if (this.radiusLabel) this.radiusLabel.style.display = 'block';
+            if (this.previewCanvas) {
+                this.previewCanvas.width = window.innerWidth;
+                this.previewCanvas.height = window.innerHeight;
+            }
         } 
         else if (target === this.needleTip || target === this.penTip || target === this.leftLeg || target === this.rightLeg) {
             this.interactionMode = 'dragging';
@@ -245,14 +251,14 @@ window.PergelTool = {
                 }
                 this.updateTransform();
                 
-                if (this.previewCtx) {
-                    if (this.previewCanvas.style.display === 'none') this.previewCanvas.style.display = 'block';
+                if (this.previewCtx && this.previewCanvas) {
+                    this.previewCanvas.style.display = 'block';
                     this.previewCtx.clearRect(0, 0, this.previewCanvas.width, this.previewCanvas.height);
                     this.previewCtx.beginPath();
                     this.previewCtx.arc(this.state.pivot.x, this.state.pivot.y, this.state.radius, 0, 2 * Math.PI, false);
-                    this.previewCtx.strokeStyle = "rgba(255, 105, 180, 0.8)";
-                    this.previewCtx.lineWidth = 2; 
-                    this.previewCtx.setLineDash([5, 5]); 
+                    this.previewCtx.strokeStyle = "rgba(255, 0, 255, 0.9)";
+                    this.previewCtx.lineWidth = 4; 
+                    this.previewCtx.setLineDash([10, 10]); 
                     this.previewCtx.stroke();
                     this.previewCtx.setLineDash([]); 
                 }
