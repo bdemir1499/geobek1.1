@@ -309,10 +309,6 @@ window.PergelTool = {
                 window.audio_draw.currentTime = 0; 
             }
 
-            // --- SON POZİSYON GÜVENLİĞİ ---
-            // finalizeDraw fonksiyonuna girdiğimizde, fonksiyon zaten en son 
-            // 'onPointerMove' anında kaydedilen 'this.state.rotation' 
-            // ve 'this.state.radius' değerlerini kullanacaktır.
             this.finalizeDraw();
             
             // Çizim durumunu mühürleme bittikten sonra kapatıyoruz
@@ -331,22 +327,10 @@ window.PergelTool = {
         if (this.interactionMode === 'resizing') {
             if (this.radiusLabel) this.radiusLabel.style.display = 'none';
             
-            // Kesikli önizleme sonrası tam çember çizdir
-            this.state.isDrawing = true;
-            const oldStart = this.state.startAngle;
-            const oldRot = this.state.rotation;
-            
-            this.state.startAngle = 0;
-            this.state.rotation = 360; 
-            
-            this.finalizeDraw();
-            
-            this.state.startAngle = oldStart;
-            this.state.rotation = oldRot;
-            this.state.isDrawing = false;
-            
             setTimeout(() => {
-                if (this.previewCanvas) this.previewCanvas.style.display = 'none';
+                if (this.previewCanvas) {
+                    this.previewCanvas.style.display = 'none';
+                }
                 if (this.previewCtx) {
                     this.previewCtx.clearRect(0, 0, this.previewCanvas.width, this.previewCanvas.height);
                 }
@@ -447,12 +431,6 @@ window.PergelTool = {
     finalizeDraw: function() {
         if (!this.state.isDrawing) return;
 
-        // Harf yığılması ve boş tıklama koruması
-        if (Math.abs(this.state.rotation - this.state.startAngle) < 0.5) {
-            this.state.isDrawing = false;
-            return;
-        }
-
         const mainCanvas = document.getElementById('drawing-canvas');
         const rect = mainCanvas ? mainCanvas.getBoundingClientRect() : { left: 0, top: 0, width: 1, height: 1 };
 
@@ -468,13 +446,14 @@ window.PergelTool = {
             window.nextPointChar = window.advanceChar(centerLabel);
 
             // --- ID'Lİ VE GÜVENLİ PERGEL ÇİZİMİ ---
+            // Her durumda TAM ÇEMBER çiz
             const strokeObj = {
                 type: 'arc',
                 cx: (this.state.pivot.x - rect.left) * scaleX, 
                 cy: (this.state.pivot.y - rect.top) * scaleY, 
                 radius: this.state.radius * scaleAvg,
-                startAngle: this.state.startAngle, 
-                endAngle: this.state.rotation, 
+                startAngle: 0, 
+                endAngle: 360, 
                 color: window.isToolThemeBlack ? '#000000' : window.currentLineColor,
                 width: 4,
                 label: centerLabel,
