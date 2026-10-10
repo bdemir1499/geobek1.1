@@ -1410,3 +1410,9 @@ body.cursor-eraser #drawing-canvas {
     right: 140px !important;
 }
 
+/* --- Sol ve Sag Panel Buton Renkleri (Yeni Istek) --- */
+.left-panel .tool-button, .left-panel .tool-button-sub { background: #FF5A71 !important; border-color: #F84C65 !important; border-bottom-color: #D14557 !important; color: white !important; }
+.left-panel .tool-button:hover, .left-panel .tool-button.active, .left-panel .tool-button-sub:hover, .left-panel .tool-button-sub.active { background: #E55065 !important; border-color: #D14557 !important; border-bottom-color: #B23A4A !important; color: white !important; }
+
+.right-panel .tool-button, .right-panel .tool-button-sub { background: #2D3E50 !important; border-color: #273747 !important; border-bottom-color: #1A252F !important; color: white !important; }
+.right-panel .tool-button:hover, .right-panel .tool-button.active, .right-panel .tool-button-sub:hover, .right-panel .tool-button-sub.active { background: #253343 !important; border-color: #1A252F !important; border-bottom-color: #10161C !important; color: white !important; }
