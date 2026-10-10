@@ -9026,12 +9026,32 @@ document.addEventListener('DOMContentLoaded', () => {
         let bgColor = '#1e1e2e';
         let pColor = 'rgba(255,255,255,0.15)'; 
         
+        let isKrem = false;
         if (cColor === 'siyah') { bgColor = '#1e1e2e'; pColor = 'rgba(205, 214, 244, 0.15)'; document.body.className = 'theme-siyah'; }
-        if (cColor === 'krem') { bgColor = '#f9f9f9'; pColor = 'rgba(0, 0, 0, 0.15)'; document.body.className = 'theme-krem'; }
+        if (cColor === 'krem') { bgColor = '#f9f9f9'; pColor = 'rgba(0, 0, 0, 0.15)'; document.body.className = 'theme-krem'; isKrem = true; }
         if (cColor === 'yesil') { bgColor = '#2a5a3b'; pColor = 'rgba(255, 255, 255, 0.2)'; document.body.className = 'theme-yesil'; }
 
         document.body.style.backgroundColor = bgColor;
         
+        // Araçların çizim renklerini ve temalarını güncelle
+        window.isToolThemeBlack = isKrem;
+        window.currentLineColor = isKrem ? '#000000' : '#FFFFFF';
+        
+        // Butonun yazısını güncelle
+        const toolColorBtn = document.getElementById('btn-tool-color');
+        if (toolColorBtn) {
+            toolColorBtn.innerText = isKrem ? "Araç Rengi: Neon" : "Araç Rengi: Siyah";
+        }
+        
+        // Fiziksel araçların görünümlerini güncelle
+        const elements = document.querySelectorAll('.ruler-container, .gonye-container, .aciolcer-container, #compass-container');
+        elements.forEach(el => {
+            if (isKrem) {
+                el.classList.add('tool-black-theme');
+            } else {
+                el.classList.remove('tool-black-theme');
+            }
+        });
         if (cPattern === 'duz') {
             document.body.style.backgroundImage = 'none';
         } else if (cPattern === 'noktali') {
