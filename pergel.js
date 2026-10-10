@@ -256,9 +256,9 @@ window.PergelTool = {
                     this.previewCtx.clearRect(0, 0, this.previewCanvas.width, this.previewCanvas.height);
                     this.previewCtx.beginPath();
                     this.previewCtx.arc(this.state.pivot.x, this.state.pivot.y, this.state.radius, 0, 2 * Math.PI, false);
-                    this.previewCtx.strokeStyle = "rgba(255, 0, 255, 0.9)";
-                    this.previewCtx.lineWidth = 4; 
-                    this.previewCtx.setLineDash([10, 10]); 
+                    this.previewCtx.strokeStyle = "rgba(255, 20, 147, 0.6)"; // Zarif ve hafif saydam pembe (DeepPink)
+                    this.previewCtx.lineWidth = 1.5; // Daha ince çizgi
+                    this.previewCtx.setLineDash([6, 6]); // Daha zarif kesikler
                     this.previewCtx.stroke();
                     this.previewCtx.setLineDash([]); 
                 }
