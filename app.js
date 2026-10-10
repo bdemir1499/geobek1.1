@@ -6058,7 +6058,7 @@ if (!isTablet) {
 const isGitHubPages = window.location.hostname.endsWith('.github.io');
 // --- AYN W-F KORUMASI ---
 window.myPublicIp = 'unknown';
-fetch('https://api.ipify.org?format=json').then(r => r.json()).then(d => { window.myPublicIp = d.ip; }).catch(e => console.warn('IP alinamadi'));
+// IP alma kodu güvenlik/gizlilik sebebiyle kaldırıldı
 const isLocalPeerServer = !isGitHubPages &&
     (window.location.hostname === 'localhost' ||
         window.location.hostname === '127.0.0.1' ||
