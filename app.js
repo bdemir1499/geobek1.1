@@ -1260,6 +1260,8 @@ const toggleSnapshotMenu = (e) => {
 
         sOptions.classList.add('hidden');
         sOptions.style.display = 'none';
+        const bgConf = document.getElementById('snapshot-bg-confirm');
+        if (bgConf) bgConf.classList.add('hidden');
 
         if (btnSnapshotMain) btnSnapshotMain.classList.remove('active');
         if (animateButton) animateButton.classList.remove('active');
@@ -1272,20 +1274,55 @@ if (btnSnapshotMain) {
     btnSnapshotMain.addEventListener('click', toggleSnapshotMenu);
     btnSnapshotMain.addEventListener('pointerdown', toggleSnapshotMenu);
 }
+const snapshotBgConfirm = document.getElementById('snapshot-bg-confirm');
+const btnSnapshotBgYes = document.getElementById('btn-snapshot-bg-yes');
+const btnSnapshotBgNo = document.getElementById('btn-snapshot-bg-no');
+
+function activateSnapshotWithBackgroundChoice(includeBg) {
+    window.snapshotIncludeBackground = includeBg;
+    if (snapshotBgConfirm) snapshotBgConfirm.classList.add('hidden');
+    if (snapshotOptions) {
+        snapshotOptions.classList.add('hidden');
+        snapshotOptions.style.display = 'none';
+    }
+    setActiveTool('snapshot');
+}
+
 if (btnSnapshotBox) {
     btnSnapshotBox.addEventListener('click', (e) => {
         e.stopPropagation();
-        setActiveTool('snapshot'); // Kutu aracÃ¯Â¿Â½nÃ¯Â¿Â½ seÃ¯Â¿Â½
-        if (snapshotOptions) {
-            snapshotOptions.classList.add('hidden');
-            snapshotOptions.style.display = 'none';
+        if (snapshotBgConfirm) {
+            const isHidden = snapshotBgConfirm.classList.contains('hidden');
+            if (isHidden) {
+                snapshotBgConfirm.classList.remove('hidden');
+            } else {
+                snapshotBgConfirm.classList.add('hidden');
+            }
+        } else {
+            activateSnapshotWithBackgroundChoice(false);
         }
     });
 }
+
+if (btnSnapshotBgYes) {
+    btnSnapshotBgYes.addEventListener('click', (e) => {
+        e.stopPropagation();
+        activateSnapshotWithBackgroundChoice(true);
+    });
+}
+
+if (btnSnapshotBgNo) {
+    btnSnapshotBgNo.addEventListener('click', (e) => {
+        e.stopPropagation();
+        activateSnapshotWithBackgroundChoice(false);
+    });
+}
+
 if (btnSnapshotLasso) {
     btnSnapshotLasso.addEventListener('click', (e) => {
         e.stopPropagation();
-        setActiveTool('lasso'); // Serbest (Kement) kesim aracÃ¯Â¿Â½nÃ¯Â¿Â½ seÃ¯Â¿Â½
+        if (snapshotBgConfirm) snapshotBgConfirm.classList.add('hidden');
+        setActiveTool('lasso');
         if (snapshotOptions) {
             snapshotOptions.classList.add('hidden');
             snapshotOptions.style.display = 'none';
@@ -4017,23 +4054,40 @@ canvas.addEventListener('pointerup', (e) => {
             if (bgCanvas) tempCtx.drawImage(bgCanvas, x, y, w, h, 0, 0, w, h);
             tempCtx.drawImage(canvas, x, y, w, h, 0, 0, w, h);
             
-            // ?? BEYAZ ARKA PLANI Ã¯Â¿Â½EFFAF YAPMA MANTIÃ¯Â¿Â½I: 
-            // Kutu kopyasÃ¯Â¿Â½ kareli zemine vb. yapÃ¯Â¿Â½Ã¯Â¿Â½tÃ¯Â¿Â½rÃ¯Â¿Â½ldÃ¯Â¿Â½Ã¯Â¿Â½Ã¯Â¿Â½nda beyazlarÃ¯Â¿Â½n alttaki Ã¯Â¿Â½izgileri Ã¯Â¿Â½rtmemesi iÃ¯Â¿Â½in
-            try {
-                const imgData = tempCtx.getImageData(0, 0, w, h);
-                const data = imgData.data;
-                for (let i = 0; i < data.length; i += 4) {
-                    const r = data[i];
-                    const g = data[i + 1];
-                    const b = data[i + 2];
-                    // Beyaza Ã¯Â¿Â½ok yakÃ¯Â¿Â½n olan pikselleri (Ã¯Â¿Â½rneÃ¯Â¿Â½in rgb deÃ¯Â¿Â½eri 240 ve Ã¯Â¿Â½stÃ¯Â¿Â½ olanlarÃ¯Â¿Â½) tam Ã¯Â¿Â½effaf (alpha = 0) yapÃ¯Â¿Â½yoruz
-                    if (r >= 240 && g >= 240 && b >= 240) {
-                        data[i + 3] = 0; 
+            const includeBg = Boolean(window.snapshotIncludeBackground);
+
+            if (!includeBg) {
+                // 🌟 ZEMİN HARİÇ (SADECE ŞEKİL):
+                // Beyaz arka planı şeffaf yapma mantığı: Kutu kopyası kareli zemine vb. yapıştırıldığında beyazların alttaki şekilleri/çizgileri örtmemesi için
+                try {
+                    const imgData = tempCtx.getImageData(0, 0, w, h);
+                    const data = imgData.data;
+                    for (let i = 0; i < data.length; i += 4) {
+                        const r = data[i];
+                        const g = data[i + 1];
+                        const b = data[i + 2];
+                        // Beyaza çok yakın olan pikselleri (rgb >= 240) tam şeffaf yapıyoruz
+                        if (r >= 240 && g >= 240 && b >= 240) {
+                            data[i + 3] = 0; 
+                        }
                     }
+                    tempCtx.putImageData(imgData, 0, 0);
+                } catch (e) {
+                    console.warn("CORS veya resim izni nedeniyle arka plan şeffaflaştırılamadı:", e);
                 }
-                tempCtx.putImageData(imgData, 0, 0);
-            } catch (e) {
-                console.warn("CORS veya resim izni nedeniyle arka plan Ã¯Â¿Â½effaflaÃ¯Â¿Â½tÃ¯Â¿Â½rÃ¯Â¿Â½lamadÃ¯Â¿Â½:", e);
+            } else {
+                // 🌟 ZEMİN DAHİL KOPYA:
+                // Kullanıcı 'Evet' seçti: Kopya zeminle beraber çerçeveye alınır, beyazlar silinmez.
+                try {
+                    tempCtx.save();
+                    tempCtx.globalCompositeOperation = 'destination-over';
+                    const bodyBg = (window.getComputedStyle && document.body) ? (window.getComputedStyle(document.body).backgroundColor || '#1e1e2e') : '#1e1e2e';
+                    tempCtx.fillStyle = bodyBg;
+                    tempCtx.fillRect(0, 0, w, h);
+                    tempCtx.restore();
+                } catch (e) {
+                    console.warn("Zemin rengi uygulanamadı:", e);
+                }
             }
 
             const finalImage = tempCanvas.toDataURL('image/png', 1.0);

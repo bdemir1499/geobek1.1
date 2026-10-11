@@ -1420,3 +1420,78 @@ body.cursor-eraser #drawing-canvas {
 
 .right-panel .tool-button, .right-panel .tool-button-sub { background: #2D3E50 !important; border-color: #273747 !important; border-bottom-color: #1A252F !important; color: white !important; }
 .right-panel .tool-button:hover, .right-panel .tool-button.active, .right-panel .tool-button-sub:hover, .right-panel .tool-button-sub.active { background: #253343 !important; border-color: #1A252F !important; border-bottom-color: #10161C !important; color: white !important; }
+
+
+/* --- KUTU KOPYALAMA ZEMİN ONAY KUTUSU --- */
+.snapshot-confirm-box {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 10px;
+    background: rgba(18, 22, 36, 0.95);
+    border: 1px solid rgba(0, 255, 204, 0.4);
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    animation: fadeInPrompt 0.2s ease-out;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.snapshot-confirm-box.hidden {
+    display: none !important;
+}
+
+.snapshot-confirm-title {
+    font-size: 12px;
+    font-weight: bold;
+    color: #00ffcc;
+    text-align: center;
+    letter-spacing: 0.3px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    font-family: 'Fredoka', sans-serif !important;
+}
+
+.snapshot-confirm-btns {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    width: 100%;
+}
+
+.btn-confirm-yes, .btn-confirm-no {
+    flex: 1;
+    padding: 6px 0;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    font-family: 'Fredoka', sans-serif !important;
+    transition: transform 0.15s, filter 0.15s;
+    text-align: center;
+    display: block;
+}
+
+.btn-confirm-yes {
+    background: linear-gradient(135deg, #00ffcc, #00bb99) !important;
+    color: #0d0d2b !important;
+}
+
+.btn-confirm-no {
+    background: linear-gradient(135deg, #ff69b4, #e0559e) !important;
+    color: #ffffff !important;
+}
+
+.btn-confirm-yes:hover, .btn-confirm-no:hover {
+    filter: brightness(1.15);
+    transform: scale(1.04);
+}
+
+.btn-confirm-yes:active, .btn-confirm-no:active {
+    transform: scale(0.95);
+}
+
+@keyframes fadeInPrompt {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
