@@ -1,4 +1,4 @@
-﻿window.onerror = function(msg, url, line) { alert('HATA: ' + msg + '\nSatir: ' + line); };
+window.onerror = function(msg, url, line) { alert('HATA: ' + msg + '\nSatir: ' + line); };
 // ?? ALAN ADI KÃ¯Â¿Â½LÃ¯Â¿Â½DÃ¯Â¿Â½ (DOMAIN BINDING) ??
 // Sadece bdemir1499.github.io adresinde, EBA sunucularÃ¯Â¿Â½nda ve yerel bilgisayarda Ã¯Â¿Â½alÃ¯Â¿Â½Ã¯Â¿Â½Ã¯Â¿Â½r!
 const gecerliAdresler = ["bdemir1499.github.io", "127.0.0.1", "localhost", "eba.gov.tr", "vercel.app", "pages.dev"];
@@ -3266,6 +3266,7 @@ document.addEventListener(evt, (e) => {
         oyunlarButton.classList.remove('active');
     }
 });
+});
 // 2. Ana menÃ¯Â¿Â½ kutusunun da dÃ¯Â¿Â½Ã¯Â¿Â½arÃ¯Â¿Â½daki "Ekran Kilitlerine" takÃ¯Â¿Â½lmasÃ¯Â¿Â½nÃ¯Â¿Â½ engelle:
 oyunlarOptions.addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
 oyunlarOptions.addEventListener('touchmove', (e) => e.stopPropagation(), { passive: true });
@@ -6091,7 +6092,10 @@ for (let i = 0; i < 5; i++) {
     myRoomCode += chars.charAt(Math.floor(Math.random() * chars.length));
 }
 const isTablet = window.location.href.includes("tablet");
-const teacherTokenFromUrl = new URLSearchParams(window.location.search).get('teacherToken');
+const _initialSearchParams = new URLSearchParams(window.location.search);
+window.teacherTokenFromUrl = _initialSearchParams.get('teacherToken');
+window.roomFromUrl = _initialSearchParams.get('room');
+const teacherTokenFromUrl = window.teacherTokenFromUrl;
 if (!isTablet) {
     window.teacherPairingToken = createSecureToken(16);
     window.teacherPairingTokenIssuedAt = Date.now();
@@ -6270,6 +6274,9 @@ myPeer.on('connection', function (conn) {
                 myConnection = conn;
                 window.authorizedTeacherId = conn.peer;
                 window.teacherConnectionStatus = 'authorized';
+                window.myConnection = conn;
+                if (!window.aktifBaglantilar) window.aktifBaglantilar = {};
+                window.aktifBaglantilar[conn.peer] = conn;
                 if (conn.isTeacherCandidate) {
                     window.pendingTeacherConnections.delete(conn.peer);
                     window.teacherPairingToken = createSecureToken(16);
@@ -6357,7 +6364,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const connectBtn = document.getElementById('connect-btn');
     if (connectBtn) {
         connectBtn.addEventListener('click', () => {
-            const roomFromUrl = new URLSearchParams(window.location.search).get('room');
+            const roomFromUrl = window.roomFromUrl || new URLSearchParams(window.location.search).get('room');
             const targetCode = (roomFromUrl || document.getElementById('connect-input').value).trim();
             const passwordInput = document.getElementById('session-pass-input').value.trim();
 
@@ -6411,7 +6418,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (teacherTokenFromUrl) {
-            const roomFromUrl = new URLSearchParams(window.location.search).get('room');
+            const roomFromUrl = window.roomFromUrl || new URLSearchParams(window.location.search).get('room');
             const passwordField = document.getElementById('session-pass-input');
             if (roomFromUrl && passwordField && !passwordField.value) {
                 passwordField.value = 'teacher-pairing';
@@ -6429,6 +6436,8 @@ function setupConnectionEvents() {
     const connection = myConnection;
     window._lastSetupConnection = myConnection;
     window._connectionEventsBound = true;
+    window.myConnection = myConnection;
+    window.setupConnectionEvents = setupConnectionEvents;
 
     // --- 1. GÃ¯Â¿Â½VENLÃ¯Â¿Â½K ONAYI ---
     // GitHub Pages akÃ¯Â¿Â½Ã¯Â¿Â½Ã¯Â¿Â½nda signaling metadata'sÃ¯Â¿Â½ public servisten geÃ¯Â¿Â½ebilir;
@@ -6676,23 +6685,7 @@ function setupConnectionEvents() {
             console.warn('GeÃ¯Â¿Â½ersiz veya yetkisiz aÃ¯Â¿Â½ paketi reddedildi:', connection.peer);
             return;
         }
-        if (data.type === 'chunk') {
-            if (chunkState.size >= NETWORK_LIMITS.maxPendingChunks && !chunkState.has(data.msgId)) {
-                console.warn('AÃ¯Â¿Â½ parÃ¯Â¿Â½a kuyruÃ¯Â¿Â½u sÃ¯Â¿Â½nÃ¯Â¿Â½rÃ¯Â¿Â½ aÃ¯Â¿Â½Ã¯Â¿Â½ldÃ¯Â¿Â½:', connection.peer);
-                return;
-            }
-            const existing = chunkState.get(data.msgId);
-            const state = existing || { total: data.total, parts: new Map(), createdAt: now };
-            if (state.total !== data.total || data.idx >= state.total) {
-                console.warn('Bozuk aÃ¯Â¿Â½ parÃ¯Â¿Â½asÃ¯Â¿Â½ reddedildi:', connection.peer);
-                return;
-            }
-            state.parts.set(data.idx, data.data);
-            chunkState.set(data.msgId, state);
-            for (const [id, value] of chunkState) {
-                if (now - value.createdAt > 30000) chunkState.delete(id);
-            }
-        }
+        // (Chunk parsing is handled cleanly below by window.chunkBuffers)
 
         // ?? NÃ¯Â¿Â½HAÃ¯Â¿Â½ VE MATEMATÃ¯Â¿Â½KSEL KESÃ¯Â¿Â½N Ã¯Â¿Â½Ã¯Â¿Â½ZÃ¯Â¿Â½M: CSS ve Canvas HD UyuÃ¯Â¿Â½mazlÃ¯Â¿Â½Ã¯Â¿Â½Ã¯Â¿Â½nÃ¯Â¿Â½ Giderici ??
         function veriyiIsle(d) {
@@ -7757,15 +7750,13 @@ window.sendNetworkData = function (dataPackage) {
     if (!dataPackage) return;
     if (dataPackage.type === 'aktif_onizleme') {
         if (!window.lastPreviewTime) window.lastPreviewTime = 0;
-        if (Date.now() - window.lastPreviewTime < 50) return;
+        if (Date.now() - window.lastPreviewTime < 40) return;
         window.lastPreviewTime = Date.now();
     }
     const boardLocalOnly = new Set(['arka_plan_resmi_aktar', 'pdf_yukle', 'resim_yukle']);
 
-    // YANKI KORUMASI Ã¯Â¿Â½Ã¯Â¿Â½Ã¯Â¿Â½N KÃ¯Â¿Â½MLÃ¯Â¿Â½K DAMGASI
     dataPackage.senderId = window.mySessionId;
 
-    // BoyutlarÃ¯Â¿Â½ damgala (PC'de doÃ¯Â¿Â½ru hizalama iÃ¯Â¿Â½in)
     const canvasElm = document.getElementById('drawing-canvas');
     if (canvasElm) {
         dataPackage.cw = canvasElm.width;
@@ -7785,79 +7776,76 @@ window.sendNetworkData = function (dataPackage) {
         }
     }
 
-    // GÃ¯Â¿Â½vence: Ã¯Â¿Â½izim gÃ¯Â¿Â½nderiliyorsa ve ID'si yoksa ID ata!
     if (dataPackage.type === 'yeni_cizim' && dataPackage.stroke && !dataPackage.stroke.id) {
         dataPackage.stroke.id = Date.now() + Math.random();
     }
 
-    
+    let dataString = "";
+    try {
+        dataString = JSON.stringify(dataPackage);
+    } catch (err) {
+        console.error('Paket JSON serileştirme hatası:', err);
+        return;
+    }
 
-    const dataString = JSON.stringify(dataPackage);
     const CHUNK_SIZE = 8000;
 
-    // DURUM 1: Tabletsek Tahtaya GÃ¯Â¿Â½nder
-    if (typeof isConnected !== 'undefined' && isConnected && typeof myConnection !== 'undefined' && myConnection && (myConnection.open || window.isConnected)) {
+    function guvenliGonder(conn) {
+        if (!conn) return;
+        if (conn.dataChannel && conn.dataChannel.readyState === 'open' && !conn.open) {
+            conn._open = true;
+        }
+        if (!conn.open && !(conn.dataChannel && conn.dataChannel.readyState === 'open')) return;
+
         if (dataString.length <= CHUNK_SIZE) {
-            myConnection.send(dataPackage);
+            try {
+                conn.send(dataPackage);
+            } catch (e) {
+                console.error("Veri gonderilemedi:", e);
+            }
         } else {
             const kargoBarkodu = Date.now().toString() + Math.floor(Math.random() * 1000);
             const totalChunks = Math.ceil(dataString.length / CHUNK_SIZE);
-            
-            function paketGonder(i, chunkIndex) {
-                if (!myConnection || !myConnection.open) return;
-                
-                if (myConnection.dataChannel && myConnection.dataChannel.bufferedAmount > 64000) { 
-                    setTimeout(() => paketGonder(i, chunkIndex), 50); 
-                    return; 
+            function paketGonder(idxOffset, chunkIndex) {
+                if (!conn.open && !(conn.dataChannel && conn.dataChannel.readyState === 'open')) return;
+                if (conn.dataChannel && conn.dataChannel.bufferedAmount > 64000) {
+                    setTimeout(() => paketGonder(idxOffset, chunkIndex), 50);
+                    return;
                 }
-                
                 try {
-                    myConnection.send({ 
-                        type: 'chunk', 
-                        msgId: kargoBarkodu, 
-                        data: dataString.substring(i, i + CHUNK_SIZE), 
-                        idx: chunkIndex, 
-                        total: totalChunks, 
-                        isLast: (chunkIndex === totalChunks - 1) 
+                    conn.send({
+                        type: 'chunk',
+                        msgId: kargoBarkodu,
+                        data: dataString.substring(idxOffset, idxOffset + CHUNK_SIZE),
+                        idx: chunkIndex,
+                        total: totalChunks,
+                        isLast: (chunkIndex === totalChunks - 1)
                     });
                 } catch (e) {
                     console.error("Chunk gonderilemedi:", e);
                 }
-                
-                i += CHUNK_SIZE; 
-                chunkIndex++; 
-                if (i < dataString.length) {
-                    setTimeout(() => paketGonder(i, chunkIndex), 10);
+                idxOffset += CHUNK_SIZE;
+                chunkIndex++;
+                if (idxOffset < dataString.length) {
+                    setTimeout(() => paketGonder(idxOffset, chunkIndex), 10);
                 }
             }
             paketGonder(0, 0);
         }
     }
-    // DURUM 2: Tahtaysak Tabletlere GÃ¯Â¿Â½nder
-    else if (typeof window.aktifBaglantilar !== 'undefined') {
-        if (boardLocalOnly.has(dataPackage.type)) {
-            console.info('Hassas dosya paketi Ã¯Â¿Â½Ã¯Â¿Â½renci cihazlarÃ¯Â¿Â½na aktarÃ¯Â¿Â½lmadÃ¯Â¿Â½:', dataPackage.type);
-            return;
-        }
+
+    // 1. myConnection varsa ona gönder (Tablet -> Tahta veya Tahta -> Öğretmen)
+    if (typeof myConnection !== 'undefined' && myConnection) {
+        guvenliGonder(myConnection);
+    }
+
+    // 2. Tahtaysak ve aktif tablet bağlantıları varsa onlara da gönder
+    if (typeof window.aktifBaglantilar !== 'undefined') {
+        if (boardLocalOnly.has(dataPackage.type)) return;
         for (let id in window.aktifBaglantilar) {
             const conn = window.aktifBaglantilar[id];
-            if (conn && conn.open) {
-                if (dataString.length <= CHUNK_SIZE) {
-                    conn.send(dataPackage);
-                } else {
-                    let i = 0; let chunkIndex = 0;
-                    const kargoBarkodu = Date.now().toString() + Math.floor(Math.random() * 1000);
-                    const totalChunks = Math.ceil(dataString.length / CHUNK_SIZE);
-                    function paketGonderTahta() {
-                        if (!conn || (!conn.open && !window.isConnected)) return;
-                        if (conn.dataChannel && conn.dataChannel.bufferedAmount > 64000) { setTimeout(paketGonderTahta, 50); return; }
-                        if (i < dataString.length) {
-                            conn.send({ type: 'chunk', msgId: kargoBarkodu, data: dataString.substring(i, i + CHUNK_SIZE), idx: chunkIndex, total: totalChunks, isLast: (chunkIndex === totalChunks - 1) });
-                            i += CHUNK_SIZE; chunkIndex++; setTimeout(paketGonderTahta, 5);
-                        }
-                    }
-                    paketGonderTahta();
-                }
+            if (conn && conn !== myConnection) {
+                guvenliGonder(conn);
             }
         }
     }
@@ -9094,7 +9082,6 @@ document.addEventListener('pointerdown', (e) => {
         }
     }
 }, { capture: true });
-}); // capture: true sayesinde diÃ¯Â¿Â½er elemanlarÃ¯Â¿Â½n engellemesini (stopPropagation) aÃ¯Â¿Â½ar
 window.addEventListener('error', function(e) {
     alert('JS HATASI: ' + e.message + ' at ' + e.filename + ':' + e.lineno);
 });
