@@ -1,4 +1,4 @@
-window.onerror = function(msg, url, line) { alert('HATA: ' + msg + '\nSatir: ' + line); };
+﻿window.onerror = function(msg, url, line) { alert('HATA: ' + msg + '\nSatir: ' + line); };
 // ?? ALAN ADI KÃ¯Â¿Â½LÃ¯Â¿Â½DÃ¯Â¿Â½ (DOMAIN BINDING) ??
 // Sadece bdemir1499.github.io adresinde, EBA sunucularÃ¯Â¿Â½nda ve yerel bilgisayarda Ã¯Â¿Â½alÃ¯Â¿Â½Ã¯Â¿Â½Ã¯Â¿Â½r!
 const gecerliAdresler = ["bdemir1499.github.io", "127.0.0.1", "localhost", "eba.gov.tr", "vercel.app", "pages.dev"];
@@ -5522,11 +5522,7 @@ function setLanguage(lang) {
     update('btn-move', t.tasi);
     update('btn-upload', t.yukle);
     update('btn-camera', t.soru_cek);
-    if (typeof tonyBtn !== 'undefined' && tonyBtn) {
-        if (!tonyBtn.innerHTML.includes('KVKK')) {
-            tonyBtn.innerHTML = t.sihirli_el;
-        }
-    }
+
     update('btn-snapshot-main', t.canlandir);
     update('btn-snapshot-box', t.kutu);
     update('btn-snapshot-lasso', t.serbest);
@@ -8666,88 +8662,183 @@ window.addEventListener('load', () => {
             }
             if (info) {
                 let isSelectedMove = (currentTool === 'move' && window.selectedItem === activeShape);
-                if (isSelectedMove) {
+
+                // ?? Pİ=3 ALINARAK ALAN/HACİM HESAPLAYAN ÖZEL FORMÜL MOTORU
+                let formulMetni = "";
+                let currentScale = activeShape.meshScale || 1;
+                // 30 px = 1 cm
+                const r_raw = ((activeShape.width * currentScale) / 30);
+                const r = Math.max(0.5, r_raw).toFixed(1);
+                const h = (parseFloat(r) * 2).toFixed(1);
+
+                const r_val = parseFloat(r);
+                const h_val = parseFloat(h);
+                const st = (activeShape.shapeType || '').toLowerCase();
+
+                if (st.includes('kure') || st === 'sphere') {
+                    const hacim = (4 * r_val * r_val * r_val).toFixed(1);
+                    const alan = (12 * r_val * r_val).toFixed(1);
+                    formulMetni = '<div style="color:#00ffcc; font-size:15px; font-weight:bold; margin-bottom:5px; border-bottom:1px solid rgba(0,255,204,0.3); padding-bottom:3px;">Küre</div>' +
+                        '<div style="color:#ffffff; margin-bottom:4px;">Yarıçap (r) = ' + r + ' cm (π = 3)</div>' +
+                        '<div style="color:#ff77ff; font-weight:600;">Hacim = (4/3) × π × r³</div>' +
+                        '<div style="color:#e0e0e0; margin-bottom:4px;">= 4 × (' + r + ')³ = <b>' + hacim + ' cm³</b></div>' +
+                        '<div style="color:#00e5ff; font-weight:600;">Alan = 4 × π × r²</div>' +
+                        '<div style="color:#e0e0e0;">= 12 × (' + r + ')² = <b>' + alan + ' cm²</b></div>';
+                } else if (st.includes('kup') || st === 'prism_cube') {
+                    const a = r;
+                    const a_val = r_val;
+                    const hacim = (a_val * a_val * a_val).toFixed(1);
+                    const alan = (6 * a_val * a_val).toFixed(1);
+                    formulMetni = '<div style="color:#00ffcc; font-size:15px; font-weight:bold; margin-bottom:5px; border-bottom:1px solid rgba(0,255,204,0.3); padding-bottom:3px;">Küp</div>' +
+                        '<div style="color:#ffffff; margin-bottom:4px;">Ayrıt (a) = ' + a + ' cm</div>' +
+                        '<div style="color:#ff77ff; font-weight:600;">Hacim = a³</div>' +
+                        '<div style="color:#e0e0e0; margin-bottom:4px;">= (' + a + ')³ = <b>' + hacim + ' cm³</b></div>' +
+                        '<div style="color:#00e5ff; font-weight:600;">Alan = 6 × a²</div>' +
+                        '<div style="color:#e0e0e0;">= 6 × (' + a + ')² = <b>' + alan + ' cm²</b></div>';
+                } else if (st.includes('silindir') || st === 'prism_cylinder') {
+                    const tabanAlani = 3 * r_val * r_val;
+                    const yanalAlan = 2 * 3 * r_val * h_val;
+                    const toplamAlan = 2 * tabanAlani + yanalAlan;
+                    const hacim = tabanAlani * h_val;
+                    formulMetni = '<div style="color:#00ffcc; font-size:15px; font-weight:bold; margin-bottom:5px; border-bottom:1px solid rgba(0,255,204,0.3); padding-bottom:3px;">Silindir</div>' +
+                        '<div style="color:#ffffff; margin-bottom:4px;">r = ' + r + ' cm, h = ' + h + ' cm (π = 3)</div>' +
+                        '<div style="color:#ff77ff; font-weight:600;">Taban Alanı = π × r² = <b>' + tabanAlani.toFixed(1) + ' cm²</b></div>' +
+                        '<div style="color:#ff77ff; font-weight:600;">Yanal Alan = 2 × π × r × h = <b>' + yanalAlan.toFixed(1) + ' cm²</b></div>' +
+                        '<div style="color:#00e5ff; font-weight:600;">Toplam Alan = 2×Taban + Yanal = <b>' + toplamAlan.toFixed(1) + ' cm²</b></div>' +
+                        '<div style="color:#ffdd00; font-weight:600;">Hacim = Taban Alanı × h = <b>' + hacim.toFixed(1) + ' cm³</b></div>';
+                } else if (st.includes('koni') || st === 'pyramid_cone') {
+                    const tabanAlani = 3 * r_val * r_val;
+                    const hacim = r_val * r_val * h_val;
+                    const anaDogru = Math.sqrt(r_val * r_val + h_val * h_val).toFixed(1);
+                    const yanalAlan = (3 * r_val * parseFloat(anaDogru)).toFixed(1);
+                    const toplamAlan = (tabanAlani + parseFloat(yanalAlan)).toFixed(1);
+                    formulMetni = '<div style="color:#00ffcc; font-size:15px; font-weight:bold; margin-bottom:5px; border-bottom:1px solid rgba(0,255,204,0.3); padding-bottom:3px;">Koni</div>' +
+                        '<div style="color:#ffffff; margin-bottom:4px;">r = ' + r + ' cm, h = ' + h + ' cm, a = ' + anaDogru + ' cm (π = 3)</div>' +
+                        '<div style="color:#ff77ff; font-weight:600;">Taban Alanı = π × r² = <b>' + tabanAlani.toFixed(1) + ' cm²</b></div>' +
+                        '<div style="color:#ff77ff; font-weight:600;">Yanal Alan = π × r × a = <b>' + yanalAlan + ' cm²</b></div>' +
+                        '<div style="color:#00e5ff; font-weight:600;">Toplam Alan = Taban + Yanal = <b>' + toplamAlan + ' cm²</b></div>' +
+                        '<div style="color:#ffdd00; font-weight:600;">Hacim = (π × r² × h) / 3 = <b>' + hacim.toFixed(1) + ' cm³</b></div>';
+                } else if (st.includes('dikdortgen') || st === 'prism_rect') {
+                    const a = (r_val * 1.5).toFixed(1);
+                    const b = r;
+                    const a_num = parseFloat(a);
+                    const b_num = parseFloat(b);
+                    const taban = a_num * b_num;
+                    const yanal = 2 * (a_num + b_num) * h_val;
+                    const toplam = 2 * taban + yanal;
+                    const hacim = taban * h_val;
+                    formulMetni = '<div style="color:#00ffcc; font-size:15px; font-weight:bold; margin-bottom:5px; border-bottom:1px solid rgba(0,255,204,0.3); padding-bottom:3px;">Dikdörtgenler Prizması</div>' +
+                        '<div style="color:#ffffff; margin-bottom:4px;">a = ' + a + ' cm, b = ' + b + ' cm, h = ' + h + ' cm</div>' +
+                        '<div style="color:#ff77ff; font-weight:600;">Taban Alanı = a × b = <b>' + taban.toFixed(1) + ' cm²</b></div>' +
+                        '<div style="color:#ff77ff; font-weight:600;">Yanal Alan = 2 × (a + b) × h = <b>' + yanal.toFixed(1) + ' cm²</b></div>' +
+                        '<div style="color:#00e5ff; font-weight:600;">Toplam Alan = 2×Taban + Yanal = <b>' + toplam.toFixed(1) + ' cm²</b></div>' +
+                        '<div style="color:#ffdd00; font-weight:600;">Hacim = a × b × h = <b>' + hacim.toFixed(1) + ' cm³</b></div>';
+                } else if (st.includes('kare_prizma') || st === 'prism_square') {
+                    const a = r;
+                    const a_num = r_val;
+                    const taban = a_num * a_num;
+                    const yanal = 4 * a_num * h_val;
+                    const toplam = 2 * taban + yanal;
+                    const hacim = taban * h_val;
+                    formulMetni = '<div style="color:#00ffcc; font-size:15px; font-weight:bold; margin-bottom:5px; border-bottom:1px solid rgba(0,255,204,0.3); padding-bottom:3px;">Kare Prizma</div>' +
+                        '<div style="color:#ffffff; margin-bottom:4px;">Taban Ayrıtı (a) = ' + a + ' cm, Yükseklik (h) = ' + h + ' cm</div>' +
+                        '<div style="color:#ff77ff; font-weight:600;">Taban Alanı = a² = <b>' + taban.toFixed(1) + ' cm²</b></div>' +
+                        '<div style="color:#ff77ff; font-weight:600;">Yanal Alan = 4 × a × h = <b>' + yanal.toFixed(1) + ' cm²</b></div>' +
+                        '<div style="color:#00e5ff; font-weight:600;">Toplam Alan = 2×Taban + Yanal = <b>' + toplam.toFixed(1) + ' cm²</b></div>' +
+                        '<div style="color:#ffdd00; font-weight:600;">Hacim = Taban Alanı × h = <b>' + hacim.toFixed(1) + ' cm³</b></div>';
+                } else if (st.startsWith('prism_') || st.includes('prizma')) {
+                    let sides = 3;
+                    let sekilAdi = 'Üçgen';
+                    if (st.includes('3') || st.includes('ucgen')) { sides = 3; sekilAdi = 'Üçgen'; }
+                    else if (st.includes('5') || st.includes('besgen')) { sides = 5; sekilAdi = 'Beşgen'; }
+                    else if (st.includes('6') || st.includes('altigen')) { sides = 6; sekilAdi = 'Altıgen'; }
+                    else if (st.includes('4') || st.includes('kare')) { sides = 4; sekilAdi = 'Kare'; }
+
+                    const a_val = (2 * r_val * Math.sin(Math.PI / sides)).toFixed(1);
+                    const apothem = (r_val * Math.cos(Math.PI / sides)).toFixed(1);
+                    const tabanAlani = (sides * parseFloat(a_val) * parseFloat(apothem) / 2).toFixed(1);
+                    const cevre = (sides * parseFloat(a_val)).toFixed(1);
+                    const yanalAlan = (parseFloat(cevre) * h_val).toFixed(1);
+                    const toplamAlan = (2 * parseFloat(tabanAlani) + parseFloat(yanalAlan)).toFixed(1);
+                    const hacim = (parseFloat(tabanAlani) * h_val).toFixed(1);
+
+                    formulMetni = '<div style="color:#00ffcc; font-size:15px; font-weight:bold; margin-bottom:5px; border-bottom:1px solid rgba(0,255,204,0.3); padding-bottom:3px;">' + sekilAdi + ' Prizma</div>' +
+                        '<div style="color:#ffffff; margin-bottom:4px;">Taban Ayrıtı (a) = ' + a_val + ' cm, Yükseklik (h) = ' + h + ' cm</div>' +
+                        '<div style="color:#ff77ff; font-weight:600;">Taban Alanı = <b>' + tabanAlani + ' cm²</b></div>' +
+                        '<div style="color:#ff77ff; font-weight:600;">Yanal Alan = Çevre × h = <b>' + yanalAlan + ' cm²</b></div>' +
+                        '<div style="color:#00e5ff; font-weight:600;">Toplam Alan = 2×Taban + Yanal = <b>' + toplamAlan + ' cm²</b></div>' +
+                        '<div style="color:#ffdd00; font-weight:600;">Hacim = Taban Alanı × h = <b>' + hacim + ' cm³</b></div>';
+                } else if (st.startsWith('pyramid_') || st.includes('piramit')) {
+                    let sides = 4;
+                    let sekilAdi = 'Kare';
+                    if (st.includes('3') || st.includes('ucgen')) { sides = 3; sekilAdi = 'Üçgen'; }
+                    else if (st.includes('4') || st.includes('kare')) { sides = 4; sekilAdi = 'Kare'; }
+                    else if (st.includes('5') || st.includes('besgen')) { sides = 5; sekilAdi = 'Beşgen'; }
+                    else if (st.includes('6') || st.includes('altigen')) { sides = 6; sekilAdi = 'Altıgen'; }
+
+                    const a_val = (2 * r_val * Math.sin(Math.PI / sides)).toFixed(1);
+                    const apothem = (r_val * Math.cos(Math.PI / sides)).toFixed(1);
+                    const tabanAlani = (sides * parseFloat(a_val) * parseFloat(apothem) / 2).toFixed(1);
+                    const hacim = (parseFloat(tabanAlani) * h_val / 3).toFixed(1);
+                    const yanalYukseklik = Math.sqrt(h_val * h_val + parseFloat(apothem) * parseFloat(apothem)).toFixed(1);
+                    const yanalAlan = (sides * parseFloat(a_val) * parseFloat(yanalYukseklik) / 2).toFixed(1);
+                    const toplamAlan = (parseFloat(tabanAlani) + parseFloat(yanalAlan)).toFixed(1);
+
+                    formulMetni = '<div style="color:#00ffcc; font-size:15px; font-weight:bold; margin-bottom:5px; border-bottom:1px solid rgba(0,255,204,0.3); padding-bottom:3px;">' + sekilAdi + ' Piramit</div>' +
+                        '<div style="color:#ffffff; margin-bottom:4px;">Taban Ayrıtı (a) = ' + a_val + ' cm, Yükseklik (h) = ' + h + ' cm</div>' +
+                        '<div style="color:#ff77ff; font-weight:600;">Taban Alanı = <b>' + tabanAlani + ' cm²</b></div>' +
+                        '<div style="color:#ff77ff; font-weight:600;">Yanal Alan = (Çevre × Yan Yükseklik) / 2 = <b>' + yanalAlan + ' cm²</b></div>' +
+                        '<div style="color:#00e5ff; font-weight:600;">Toplam Alan = Taban + Yanal = <b>' + toplamAlan + ' cm²</b></div>' +
+                        '<div style="color:#ffdd00; font-weight:600;">Hacim = (Taban Alanı × h) / 3 = <b>' + hacim + ' cm³</b></div>';
+                }
+
+                if (isSelectedMove && formulMetni) {
+                    info.innerHTML = formulMetni;
                     info.style.display = 'block';
+
+                    // Şeklin ekran izdüşümüne göre akıllı konumlandırma
+                    let screenX = 0, screenY = 0;
+                    if (window.Scene3D && window.Scene3D.camera && window.Scene3D.scene) {
+                        const sceneMesh = window.Scene3D.scene.children.find(m => m.userData && m.userData.strokeData && m.userData.strokeData.id === activeShape.id);
+                        if (sceneMesh) {
+                            const vec = sceneMesh.position.clone();
+                            vec.project(window.Scene3D.camera);
+                            const canvasEl = document.getElementById('drawing-canvas');
+                            const rect = canvasEl ? canvasEl.getBoundingClientRect() : { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight };
+                            const w = rect.width / 2, h = rect.height / 2;
+                            screenX = rect.left + (vec.x * w) + w;
+                            screenY = rect.top + (-(vec.y * h) + h);
+                        }
+                    }
+                    if (!screenX) {
+                        screenX = (activeShape.x || 0) + (activeShape.width || 100) / 2;
+                        screenY = (activeShape.y || 0) + (activeShape.height || 100) / 2;
+                    }
+
+                    const shapeHalfW = Math.max(45, ((activeShape.width || 100) * currentScale) / 2);
+                    const tooltipWidth = 280;
+
+                    let posX = screenX + shapeHalfW + 20;
+                    let posY = screenY - 70;
+
+                    // Sağ panele çarpmayı engelle (sağ panel ~85px)
+                    if (posX + tooltipWidth > window.innerWidth - 85) {
+                        posX = screenX - shapeHalfW - tooltipWidth - 20;
+                    }
+                    // Sol panele çarpmayı engelle (sol panel ~85px)
+                    if (posX < 85) {
+                        posX = Math.max(85, Math.min(window.innerWidth - tooltipWidth - 85, screenX - tooltipWidth / 2));
+                        posY = screenY + shapeHalfW + 20;
+                    }
+                    posY = Math.max(20, Math.min(window.innerHeight - 300, posY));
+
+                    info.style.left = Math.round(posX) + 'px';
+                    info.style.top = Math.round(posY) + 'px';
+                    info.style.bottom = 'auto';
+                    info.style.transform = 'none';
                 } else {
                     info.style.display = 'none';
                 }
-
-                // ?? PÃ¯Â¿Â½=3 ALINARAK ALAN/HACÃ¯Â¿Â½M HESAPLAYAN Ã¯Â¿Â½ZEL FORMÃ¯Â¿Â½L MOTORU
-                let formulMetni = "";
-                let currentScale = activeShape.meshScale || 1;
-                const r = ((activeShape.width * currentScale) / 30).toFixed(1);
-                const h = (r * 2).toFixed(1);
-
-                let r_val = parseFloat(r);
-                let h_val = parseFloat(h);
-
-                // FormÃ¯Â¿Â½ller HTML destekli renkli ve kalÃ¯Â¿Â½n yazÃ¯Â¿Â½larla Ã¯Â¿Â½ekillendiriliyor
-                if (activeShape.shapeType === '3d_kure') {
-                    formulMetni = `<span style="color:#00ffcc; font-size:16px;">Küre</span><br>r = ${r} cm<br><span style="color:#ff00ff">Hacim = (4/3) × π × r³</span><br>= (4/3) × 3 × (${r})³ = <b>${(4 * r_val * r_val * r_val).toFixed(1)} cm³</b><br><span style="color:#ff00ff">Alan = 4 × π × r²</span><br>= 4 × 3 × (${r})² = <b>${(12 * r_val * r_val).toFixed(1)} cm²</b>`;
-                } else if (activeShape.shapeType === '3d_kup') {
-                    formulMetni = `<span style="color:#00ffcc; font-size:16px;">Küp</span><br>a = ${r} cm<br><span style="color:#ff00ff">Hacim = a³</span><br>= (${r})³ = <b>${(r_val * r_val * r_val).toFixed(1)} cm³</b><br><span style="color:#ff00ff">Alan = 6 × a²</span><br>= 6 × (${r})² = <b>${(6 * r_val * r_val).toFixed(1)} cm²</b>`;
-                } else if (activeShape.shapeType === '3d_silindir') {
-                    let tabanAlani = 3 * r_val * r_val;
-                    let yanalAlan = 2 * 3 * r_val * h_val;
-                    let toplamAlan = 2 * tabanAlani + yanalAlan;
-                    let hacim = tabanAlani * h_val;
-                    formulMetni = `<span style="color:#00ffcc; font-size:16px;">Silindir</span><br>r = ${r} cm, h = ${h} cm<br><span style="color:#ff00ff">Taban Alanı = π × r²</span><br>= 3 × (${r})² = <b>${tabanAlani.toFixed(1)} cm²</b><br><span style="color:#ff00ff">Yanal Alan = 2 × π × r × h</span><br>= 2 × 3 × ${r} × ${h} = <b>${yanalAlan.toFixed(1)} cm²</b><br><span style="color:#ff00ff">Toplam Alan = 2 × (Taban Alanı) + Yanal Alan</span><br>= 2 × ${tabanAlani.toFixed(1)} + ${yanalAlan.toFixed(1)} = <b>${toplamAlan.toFixed(1)} cm²</b><br><span style="color:#ff00ff">Hacim = π × r² × h</span><br>= 3 × (${r})² × ${h} = <b>${hacim.toFixed(1)} cm³</b>`;
-                } else if (activeShape.shapeType === '3d_koni') {
-                    formulMetni = `<span style="color:#00ffcc; font-size:16px;">Koni</span><br>r = ${r} cm, h = ${h} cm<br><span style="color:#ff00ff">Hacim = (π × r² × h) / 3</span><br>= (3 × (${r})² × ${h}) / 3 = <b>${(r_val * r_val * h_val).toFixed(1)} cm³</b>`;
-                } else if (activeShape.shapeType === '3d_dikdortgen_prizma') {
-                    let a = (r_val * 1.5).toFixed(1);
-                    let b = r;
-                    let taban = (a * b).toFixed(1);
-                    let yanal = (2 * (parseFloat(a) + parseFloat(b)) * h_val).toFixed(1);
-                    formulMetni = `<span style="color:#00ffcc; font-size:16px;">Dikdörtgenler Prizması</span><br>a = ${a} cm, b = ${b} cm, h = ${h} cm<br><span style="color:#ff00ff">Hacim = a × b × h</span><br>= ${a} × ${b} × ${h} = <b>${(taban * h_val).toFixed(1)} cm³</b><br><span style="color:#ff00ff">Alan = 2 × (a × b) + Yanal Alan</span><br>= 2 × ${taban} + ${yanal} = <b>${(2 * taban + parseFloat(yanal)).toFixed(1)} cm²</b>`;
-                } else if (activeShape.shapeType.includes('_prizma') || activeShape.shapeType.includes('_piramit')) {
-                    let isPrism = activeShape.shapeType.includes('_prizma');
-                    let nameParts = activeShape.shapeType.split('_');
-                    let shapePrefix = nameParts[1]; // e.g. "ucgen", "kare", "besgen", "altigen"
-                    
-                    let sides = 4;
-                    if (shapePrefix === 'ucgen') sides = 3;
-                    else if (shapePrefix === 'kare') sides = 4;
-                    else if (shapePrefix === 'besgen') sides = 5;
-                    else if (shapePrefix === 'altigen') sides = 6;
-
-                    let a_val = (2 * r_val * Math.sin(Math.PI / sides)).toFixed(1); // Kenar uzunluğu
-                    let apothem = (r_val * Math.cos(Math.PI / sides)).toFixed(1); // Merkeze uzaklık
-                    let tabanAlani = (sides * a_val * apothem / 2).toFixed(1);
-                    let cevre = (sides * a_val).toFixed(1);
-
-                    let sekilAdi = sides === 3 ? "Üçgen" : sides === 4 ? "Kare" : sides === 5 ? "Beşgen" : sides === 6 ? "Altıgen" : sides + "gen";
-                    let anaBaslik = isPrism ? `${sekilAdi} Prizma` : `${sekilAdi} Piramit`;
-
-                    let sonucHacim = isPrism ? (tabanAlani * h_val).toFixed(1) : (tabanAlani * h_val / 3).toFixed(1);
-                    let hacimFormulStr = isPrism ? "Taban Alanı × h" : "(Taban Alanı × h) / 3";
-                    let hacimDegerStr = isPrism ? `${tabanAlani} × ${h}` : `(${tabanAlani} × ${h}) / 3`;
-
-                    formulMetni = `<span style="color:#00ffcc; font-size:16px;">${anaBaslik}</span><br>Taban Ayrıtı (a) = ${a_val} cm, Yükseklik (h) = ${h} cm<br><span style="color:#ff00ff">Taban Alanı = ${tabanAlani} cm²</span><br><span style="color:#ff00ff">Hacim = ${hacimFormulStr}</span><br>= ${hacimDegerStr} = <b>${sonucHacim} cm³</b>`;
-
-                    if (isPrism) {
-                        let yanalAlan = (cevre * h_val).toFixed(1);
-                        formulMetni += `<br><span style="color:#ff00ff">Yanal Alan = Çevre × h</span><br>= ${cevre} × ${h} = <b>${yanalAlan} cm²</b>`;
-                    }
-                }
-
-                info.innerHTML = formulMetni;
-
-                // Ã¯Â¿Â½eklin saÃ¯Â¿Â½Ã¯Â¿Â½nda pozisyonlama
-                const marginX = 20;
-                let posX = activeShape.x + activeShape.width + marginX;
-                let posY = activeShape.y;
-
-                // EkranÃ¯Â¿Â½n saÃ¯Â¿Â½Ã¯Â¿Â½na taÃ¯Â¿Â½Ã¯Â¿Â½yorsa sola al
-                if (posX + 250 > window.innerWidth) {
-                    posX = activeShape.x - 250 - marginX;
-                }
-
-                info.style.left = posX + "px";
-                info.style.top = posY + "px";
-                info.style.bottom = "auto";
-                info.style.transform = "none";
-                // Panel tasarÃ¯Â¿Â½mÃ¯Â¿Â½ artÃ¯Â¿Â½k tamamen style.css dosyasÃ¯Â¿Â½ndaki #info-tooltip id'si ile yÃ¯Â¿Â½netiliyor.
             }
             const sInput = document.getElementById('shape-slider');
             if (sInput && document.activeElement !== sInput) sInput.value = (activeShape.openRatio || 0) * 100;
