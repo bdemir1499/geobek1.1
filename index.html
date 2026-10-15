@@ -32,7 +32,7 @@
     <script src='dilimle.js?v=1'></script>
 </head>
 
-<body>
+<body class="theme-krem" style="background-color: #f9f9f9;">
 
 
 <div id="network-mini-btn" style="display: none; position: fixed; bottom: 30px; right: 15px; background: #0d0d2b; color: #00ffcc; padding: 10px 15px; border-radius: 50px; z-index: 40000; font-family: 'Fredoka', sans-serif; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.5); border: 2px solid #00ffcc;">
@@ -189,17 +189,17 @@
         <button id="btn-kalem" class="tool-button">Kalem</button>
         <button id="btn-akilli-kalem" class="tool-button">Akıllı Kalem</button>
         <div id="pen-options" class="tool-options hidden">
-            <div class="color-box" style="background-color: #FFFFFF;"></div> 
-            <div class="color-box" style="background-color: #000000;"></div>
-            <div class="color-box" style="background-color: #FF0000;"></div>
-            <div class="color-box" style="background-color: #0000FF;"></div>
-            <div class="color-box" style="background-color: #FF69B4;"></div> 
-            <div class="color-box" style="background-color: #00FFCC;"></div> 
-            <div class="color-box" style="background-color: #FFA500;"></div> 
-            <div class="color-box" style="background-color: #FF00FF;"></div> 
-            <div class="color-box" style="background-color: #00FFFF;"></div> 
-            <div class="color-box" style="background-color: #FFFF00;"></div> 
-            <div class="color-box" style="background-color: #9400D3;"></div> 
+            <div class="color-box" style="background-color: #FFFFFF;" data-color="#FFFFFF"></div> 
+            <div class="color-box selected" style="background-color: #000000;" data-color="#000000"></div>
+            <div class="color-box" style="background-color: #FF0000;" data-color="#FF0000"></div>
+            <div class="color-box" style="background-color: #0000FF;" data-color="#0000FF"></div>
+            <div class="color-box" style="background-color: #FF69B4;" data-color="#FF69B4"></div> 
+            <div class="color-box" style="background-color: #00FFCC;" data-color="#00FFCC"></div> 
+            <div class="color-box" style="background-color: #FFA500;" data-color="#FFA500"></div> 
+            <div class="color-box" style="background-color: #FF00FF;" data-color="#FF00FF"></div> 
+            <div class="color-box" style="background-color: #00FFFF;" data-color="#00FFFF"></div> 
+            <div class="color-box" style="background-color: #FFFF00;" data-color="#FFFF00"></div> 
+            <div class="color-box" style="background-color: #9400D3;" data-color="#9400D3"></div> 
         </div>
 
         <button id="btn-cizgi" class="tool-button">Çizgi</button>
@@ -211,7 +211,7 @@
             <button id="btn-isin" class="tool-button-sub">Işın</button>
             <div id="line-color-options" class="color-palette">
                 <div class="color-box" style="background-color: #FFFFFF;" data-color="#FFFFFF"></div>
-                <div class="color-box" style="background-color: #000000;" data-color="#000000"></div>
+                <div class="color-box selected" style="background-color: #000000;" data-color="#000000"></div>
                 <div class="color-box" style="background-color: #FF0000;" data-color="#FF0000"></div>
                 <div class="color-box" style="background-color: #0000FF;" data-color="#0000FF"></div>
                 <div class="color-box" style="background-color: #00FFCC;" data-color="#00FFCC"></div>
@@ -242,7 +242,7 @@
 
             <div id="polygon-color-options" class="color-palette" style="margin-top: 10px; justify-content: center;">
                 <div class="color-box" style="background-color: #FFFFFF;" data-color="#FFFFFF"></div>
-                <div class="color-box" style="background-color: #000000;" data-color="#000000"></div>
+                <div class="color-box selected" style="background-color: #000000;" data-color="#000000"></div>
                 <div class="color-box" style="background-color: #FF0000;" data-color="#FF0000"></div>
                 <div class="color-box" style="background-color: #0000FF;" data-color="#0000FF"></div>
                 <div class="color-box" style="background-color: #00FFCC;" data-color="#00FFCC"></div>
@@ -263,7 +263,7 @@
 </div>
 </div> 
 <div class="panel right-panel">
-        <button id="btn-tool-color" class="tool-button">Araç Rengi: Siyah</button>
+        <button id="btn-tool-color" class="tool-button">Araç Rengi: Neon</button>
         <button id="btn-undo" class="tool-button">Geri Al</button>
         <button id="btn-clear-all" class="tool-button">Hepsini Sil</button>
         <button id="btn-move" class="tool-button">Taşı</button>

@@ -424,7 +424,7 @@ window.PergelTool = {
         this.previewCtx.clearRect(0, 0, this.previewCanvas.width, this.previewCanvas.height);
         this.previewCtx.beginPath();
         this.previewCtx.arc(this.state.pivot.x, this.state.pivot.y, this.state.radius, this.state.startAngle * (Math.PI / 180), this.state.rotation * (Math.PI / 180), false);
-        this.previewCtx.strokeStyle = "rgba(255, 0, 255, 0.7)"; this.previewCtx.lineWidth = 4; this.previewCtx.stroke();
+        this.previewCtx.strokeStyle = window.isToolThemeBlack ? '#000000' : (window.currentLineColor || '#FFFFFF'); this.previewCtx.lineWidth = 4; this.previewCtx.stroke();
     },
     
    // --- 3. FİNAL ÇİZİM (CANLI REFERANS, ID VE AĞA AKTARIM) ---
@@ -454,7 +454,7 @@ window.PergelTool = {
                 radius: this.state.radius * scaleAvg,
                 startAngle: 0, 
                 endAngle: 360, 
-                color: window.isToolThemeBlack ? '#000000' : window.currentLineColor,
+                color: window.isToolThemeBlack ? '#000000' : (window.currentLineColor || '#FFFFFF'),
                 width: 4,
                 label: centerLabel,
                 isPhysicalTool: true,

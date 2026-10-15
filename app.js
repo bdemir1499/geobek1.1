@@ -1072,10 +1072,10 @@ let currentTool = 'none';
 let isPinching = false;           // Ã¯Â¿Â½ki parmakla yakÃ¯Â¿Â½nlaÃ¯Â¿Â½tÃ¯Â¿Â½rma aktif mi?
 let initialDistance = 0;          // BaÃ¯Â¿Â½langÃ¯Â¿Â½Ã¯Â¿Â½ parmak mesafesi (zoom iÃ¯Â¿Â½in)
 let initialScale = 0;             // BaÃ¯Â¿Â½langÃ¯Â¿Â½Ã¯Â¿Â½ta seÃ¯Â¿Â½ili nesnenin geniÃ¯Â¿Â½liÃ¯Â¿Â½i
-let initialCenter = { x: 0, y: 0 }; // Ã¯Â¿Â½ki parmaÃ¯Â¿Â½Ã¯Â¿Â½n merkez noktasÃ¯Â¿Â½ (pan iÃ¯Â¿Â½in)
-let currentPenColor = '#FFFFFF';
+let currentPenColor = '#000000';
 let currentPenWidth = 4;
-window.currentLineColor = '#FFFFFF'; // VarsayÃ¯Â¿Â½lan Renk: BEYAZ
+window.currentLineColor = '#000000'; // Varsayılan Açık Krem için SİYAH
+window.currentPenColor = '#000000';
 const SNAP_THRESHOLD = 10;
 let returnToSnapshot = false; // Ã¯Â¿Â½Ã¯Â¿Â½lem bitince geri dÃ¯Â¿Â½nÃ¯Â¿Â½lecek mi? 
 // ==========================================
@@ -1469,7 +1469,7 @@ function redrawAllStrokes() {
             if (p.tool === 'pen' && p.path && p.path.length > 0) {
                 // ?? Kalem iÃ¯Â¿Â½in canlÃ¯Â¿Â½ Ã¯Â¿Â½nizleme kesiksiz ve kendi renginde olmalÃ¯Â¿Â½!
                 ctx.setLineDash([]);
-                ctx.strokeStyle = p.color || '#FFFFFF';
+                ctx.strokeStyle = p.color || (window.isToolThemeBlack ? '#000000' : '#FFFFFF');
                 // ?? KalÃ¯Â¿Â½nlÃ¯Â¿Â½k: GÃ¯Â¿Â½nderilen orijinal kalÃ¯Â¿Â½nlÃ¯Â¿Â½Ã¯Â¿Â½Ã¯Â¿Â½ (baseWidth) kullan
                 ctx.lineWidth = p.baseWidth || window.currentLineWidth || 3;
                 ctx.lineCap = 'round';
@@ -3103,11 +3103,18 @@ colorBoxes.forEach(box => {
     box.addEventListener('click', (e) => {
         colorBoxes.forEach(b => b.classList.remove('selected'));
         e.target.classList.add('selected');
-        currentPenColor = e.target.style.backgroundColor;
+        currentPenColor = e.target.dataset.color || e.target.style.backgroundColor;
+        window.currentPenColor = currentPenColor;
     });
 });
-colorBoxes[0].classList.add('selected');
-currentPenColor = colorBoxes[0].style.backgroundColor;
+const initialKremTheme = (typeof currentColor !== 'undefined' && currentColor === 'krem') || (!document.body.className || document.body.className.includes('theme-krem'));
+const initialBoxIdx = initialKremTheme && colorBoxes.length > 1 ? 1 : 0;
+if (colorBoxes.length > 0) {
+    colorBoxes.forEach(b => b.classList.remove('selected'));
+    colorBoxes[initialBoxIdx].classList.add('selected');
+    currentPenColor = colorBoxes[initialBoxIdx].dataset.color || colorBoxes[initialBoxIdx].style.backgroundColor || (initialKremTheme ? '#000000' : '#FFFFFF');
+    window.currentPenColor = currentPenColor;
+}
 
 lineButton.addEventListener('click', () => {
     if (lineButton.classList.contains('active')) { setActiveTool('none'); }
@@ -3120,10 +3127,12 @@ lineButton.addEventListener('click', () => {
     }
 });
 
-// Ã¯Â¿Â½okgen Renk SeÃ¯Â¿Â½imi (VarsayÃ¯Â¿Â½lan Beyaz)
+// Çokgen Renk Seçimi
 if (polygonColorOptions.length > 0) {
-    polygonColorOptions[0].classList.add('selected');
-    window.currentLineColor = polygonColorOptions[0].dataset.color || '#FFFFFF';
+    const initialPolyIdx = initialKremTheme && polygonColorOptions.length > 1 ? 1 : 0;
+    polygonColorOptions.forEach(b => b.classList.remove('selected'));
+    polygonColorOptions[initialPolyIdx].classList.add('selected');
+    window.currentLineColor = polygonColorOptions[initialPolyIdx].dataset.color || (initialKremTheme ? '#000000' : '#FFFFFF');
 
     polygonColorOptions.forEach(box => {
         const handleColorSelect = (e) => {
@@ -3312,8 +3321,12 @@ lineColorOptions.forEach(box => {
         window.currentLineColor = color;
     });
 });
-lineColorOptions[0].classList.add('selected');
-window.currentLineColor = lineColorOptions[0].dataset.color || lineColorOptions[0].style.backgroundColor;
+const initialLineIdx = initialKremTheme && lineColorOptions.length > 1 ? 1 : 0;
+if (lineColorOptions.length > 0) {
+    lineColorOptions.forEach(b => b.classList.remove('selected'));
+    lineColorOptions[initialLineIdx].classList.add('selected');
+    window.currentLineColor = lineColorOptions[initialLineIdx].dataset.color || lineColorOptions[initialLineIdx].style.backgroundColor || (initialKremTheme ? '#000000' : '#FFFFFF');
+}
 
 // ==========================================
 // ?? NÃ¯Â¿Â½HAÃ¯Â¿Â½ Ã¯Â¿Â½Ã¯Â¿Â½ZÃ¯Â¿Â½M: KATMAN (Z-INDEX) VE BUTON KORUMA ZIRHI ??
@@ -3587,7 +3600,7 @@ canvas.addEventListener('pointerdown', (e) => {
         case 'pen': 
         case 'smart_pen': 
             isDrawing = true; const pInfoDown = getPointerInfo(e); const pStroke = { type: 'pen', pointerType: pInfoDown.type, startTime: Date.now(), path: [{ x: snapPos.x, y: snapPos.y, p: pInfoDown.type === 'pen' ? pInfoDown.pressure : 1 }], color: currentPenColor, baseWidth: currentPenWidth, id: Date.now() + Math.random() }; drawnStrokes.push(pStroke); break;
-        case 'point': isDrawing = false; const noktaObj = { type: 'point', x: snapPos.x, y: snapPos.y, label: nextPointChar, color: window.isToolThemeBlack ? '#000000' : (window.currentLineColor || '#FFFFFF'), id: Date.now() + Math.random() }; drawnStrokes.push(noktaObj); if (typeof window.sendNetworkData === 'function' && typeof isConnected !== 'undefined' && isConnected) window.sendNetworkData({ type: 'yeni_cizim', stroke: noktaObj }); nextPointChar = advanceChar(nextPointChar); if (typeof window.nextPointChar !== 'undefined') window.nextPointChar = nextPointChar; setTimeout(() => { if (typeof redrawAllStrokes === 'function') redrawAllStrokes(); }, 10); break;
+        case 'point': isDrawing = false; const noktaObj = { type: 'point', x: snapPos.x, y: snapPos.y, label: nextPointChar, color: window.currentLineColor || (window.isToolThemeBlack ? '#000000' : '#FFFFFF'), id: Date.now() + Math.random() }; drawnStrokes.push(noktaObj); if (typeof window.sendNetworkData === 'function' && typeof isConnected !== 'undefined' && isConnected) window.sendNetworkData({ type: 'yeni_cizim', stroke: noktaObj }); nextPointChar = advanceChar(nextPointChar); if (typeof window.nextPointChar !== 'undefined') window.nextPointChar = nextPointChar; setTimeout(() => { if (typeof redrawAllStrokes === 'function') redrawAllStrokes(); }, 10); break;
         case 'eraser': isDrawing = false; break; // ?? KESÃ¯Â¿Â½N Ã¯Â¿Â½Ã¯Â¿Â½ZÃ¯Â¿Â½M: Silgi modunda kalem izi Ã¯Â¿Â½izilmesi tamamen yasaklandÃ¯Â¿Â½!
         case 'straightLine': if (!isDrawingLine) { isDrawingLine = true; lineStartPoint = snapPos; } break;
         case 'line': if (!isDrawingInfinityLine) { isDrawingInfinityLine = true; lineStartPoint = pos; } break;
@@ -3834,7 +3847,7 @@ canvas.addEventListener('pointermove', (e) => {
     const aktifCizimVarMi = isDrawingLine || isDrawingInfinityLine || isDrawingSegment || isDrawingRay || isDrawingRectangle || (window.tempPolygonData && window.tempPolygonData.center) || (currentTool === 'snapshot' && typeof snapshotStart !== 'undefined' && snapshotStart);
 
     if (aktifCizimVarMi) {
-        redrawAllStrokes(); const ctx = canvas.getContext('2d'); ctx.save(); ctx.strokeStyle = window.currentLineColor || '#000000'; ctx.lineWidth = 3; ctx.setLineDash([5, 5]);
+        redrawAllStrokes(); const ctx = canvas.getContext('2d'); ctx.save(); ctx.strokeStyle = window.currentLineColor || (window.isToolThemeBlack ? '#000000' : '#FFFFFF'); ctx.lineWidth = 3; ctx.setLineDash([5, 5]);
 
         if (['straightLine', 'line', 'segment', 'ray'].includes(currentTool) && lineStartPoint) {
             ctx.beginPath(); const dx = endPos.x - lineStartPoint.x; const dy = endPos.y - lineStartPoint.y;
@@ -3975,7 +3988,7 @@ canvas.addEventListener('pointerup', (e) => {
     // --- C) NORMAL Ã¯Â¿Â½Ã¯Â¿Â½ZGÃ¯Â¿Â½LER (DOÃ¯Â¿Â½RU, IÃ¯Â¿Â½IN, SEGMENT) ---
     if (lineStartPoint && finalPos) {
         let strokeObj = null;
-        const cizgiRengi = window.isToolThemeBlack ? '#000000' : (window.currentLineColor || '#FFFFFF');
+        const cizgiRengi = window.currentLineColor || (window.isToolThemeBlack ? '#000000' : '#FFFFFF');
 
         if (isDrawingLine) strokeObj = { type: 'straightLine', p1: lineStartPoint, p2: finalPos, color: cizgiRengi, width: 4 };
         else if (isDrawingInfinityLine) {
@@ -4130,7 +4143,7 @@ canvas.addEventListener('pointerup', (e) => {
         if (widthPx > 10 && heightPx > 10) {
             const startX = Math.min(rectStartPoint.x, finalPos.x);
             const startY = Math.min(rectStartPoint.y, finalPos.y);
-            const color = window.isToolThemeBlack ? '#000000' : (window.currentLineColor || '#000000');
+            const color = window.currentLineColor || (window.isToolThemeBlack ? '#000000' : '#FFFFFF');
 
             const rectLabels = [nextPointChar];
             for (let i = 0; i < 3; i++) { nextPointChar = advanceChar(nextPointChar); rectLabels.push(nextPointChar); }
@@ -4664,8 +4677,8 @@ window.addNewImageToCanvas = function(img, isPDF = false, pcKordinatlari = null)
 
 // --- ARAÃ¯Â¿Â½ RENGÃ¯Â¿Â½ DEÃ¯Â¿Â½Ã¯Â¿Â½Ã¯Â¿Â½TÃ¯Â¿Â½RME MANTIÃ¯Â¿Â½I (SÃ¯Â¿Â½YAH / NEON / TOK MAVÃ¯Â¿Â½) ---
 const toolColorBtn = document.getElementById('btn-tool-color');
-let isBlackTheme = false;
-window.isToolThemeBlack = false; // DiÃ¯Â¿Â½er dosyalar iÃ¯Â¿Â½in global deÃ¯Â¿Â½iÃ¯Â¿Â½ken
+let isBlackTheme = true;
+window.isToolThemeBlack = true; // Açık Krem için varsayılan siyah araç teması
 
 if (toolColorBtn) {
     toolColorBtn.addEventListener('click', () => {
@@ -7556,7 +7569,7 @@ if (!data || !data.type) return;
                 r.drawHandleLabel.style.display = 'block';
                 r.drawCtx.clearRect(0, 0, r.drawCanvas.width, r.drawCanvas.height);
                 r.drawCtx.beginPath(); r.drawCtx.moveTo(0, 4); r.drawCtx.lineTo(p.handleX, 4);
-                r.drawCtx.strokeStyle = '#FFFFFF'; r.drawCtx.lineWidth = 3; r.drawCtx.stroke();
+                r.drawCtx.strokeStyle = window.isToolThemeBlack ? '#000000' : (window.currentLineColor || '#FFFFFF'); r.drawCtx.lineWidth = 3; r.drawCtx.stroke();
             }
             else if (arac === 'gonye' && window.GonyeTool && window.GonyeTool.drawCtx) {
                 const g = window.GonyeTool;
@@ -7565,14 +7578,14 @@ if (!data || !data.type) return;
                 g.drawHandleLabel.style.display = 'block';
                 g.drawCtx.clearRect(0, 0, g.drawCanvas.width, g.drawCanvas.height);
                 g.drawCtx.beginPath(); g.drawCtx.moveTo(4, g.state.height); g.drawCtx.lineTo(4, p.handleY + 10);
-                g.drawCtx.strokeStyle = '#FFFFFF'; g.drawCtx.lineWidth = 3; g.drawCtx.stroke();
+                g.drawCtx.strokeStyle = window.isToolThemeBlack ? '#000000' : (window.currentLineColor || '#FFFFFF'); g.drawCtx.lineWidth = 3; g.drawCtx.stroke();
             }
             else if (arac === 'aciolcer' && window.AciolcerTool && window.AciolcerTool.previewCtx) {
                 const a = window.AciolcerTool;
                 a.previewCanvas.style.display = 'block'; a.previewCanvas.width = window.innerWidth; a.previewCanvas.height = window.innerHeight;
                 a.previewCtx.clearRect(0, 0, a.previewCanvas.width, a.previewCanvas.height);
                 a.previewCtx.beginPath(); a.previewCtx.moveTo(p.cx, p.cy); a.previewCtx.lineTo(p.px, p.py);
-                a.previewCtx.strokeStyle = '#FFFFFF'; a.previewCtx.lineWidth = 3; a.previewCtx.setLineDash([5, 5]); a.previewCtx.stroke(); a.previewCtx.setLineDash([]);
+                a.previewCtx.strokeStyle = window.isToolThemeBlack ? '#000000' : (window.currentLineColor || '#FFFFFF'); a.previewCtx.lineWidth = 3; a.previewCtx.setLineDash([5, 5]); a.previewCtx.stroke(); a.previewCtx.setLineDash([]);
                 a.drawHandleLabel.style.display = 'block'; a.drawHandleLabel.innerText = `${p.angle.toFixed(0)}`;
                 a.redLine.style.transition = 'none'; a.redLine.style.transform = `rotate(${-p.angle}deg)`;
                 a.drawHandle.style.transform = `translateX(-50%) translate(${p.ldx}px, ${p.ldy + 5}px)`;
@@ -7608,7 +7621,7 @@ if (!data || !data.type) return;
                 if (canvas) {
                     const ctx = canvas.getContext('2d');
                     ctx.save();
-                    ctx.strokeStyle = p.color || '#000000';
+                    ctx.strokeStyle = p.color || (window.isToolThemeBlack ? '#000000' : '#FFFFFF');
                     ctx.lineWidth = 3;
                     ctx.setLineDash([5, 5]); // AynÃ¯Â¿Â½ tabletteki gibi kesikli Ã¯Â¿Â½izgi efekti
                     ctx.beginPath();
@@ -9130,7 +9143,7 @@ if (window.OyunListesi) {
 }
 
 // === TAHTA (ZEMİN VE DESEN) SEÇİM MOTORU ===
-document.addEventListener('DOMContentLoaded', () => {
+function initTahtaMotoru() {
     const btnTahta = document.getElementById('btn-tahta');
     const tahtaOptions = document.getElementById('tahta-options');
     const tahtaColors = document.getElementById('tahta-colors');
@@ -9166,8 +9179,29 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.backgroundColor = bgColor;
         
         // Araçların çizim renklerini ve temalarını güncelle
-        window.isToolThemeBlack = isKrem;
-        window.currentLineColor = isKrem ? '#000000' : '#FFFFFF';
+        window.isToolThemeBlack = isKrem; if (typeof isBlackTheme !== 'undefined') isBlackTheme = isKrem;
+        const defaultColor = isKrem ? '#000000' : '#FFFFFF';
+        window.currentLineColor = defaultColor;
+        window.currentPenColor = defaultColor;
+        currentPenColor = defaultColor;
+
+        // UI paletlerindeki seçim kutucuklarını senkronize et (Krem ise siyah [1], diğerlerinde beyaz [0])
+        const targetBoxIdx = isKrem ? 1 : 0;
+        const penBoxes = document.querySelectorAll('#pen-options .color-box');
+        if (penBoxes.length > targetBoxIdx) {
+            penBoxes.forEach(b => b.classList.remove('selected'));
+            penBoxes[targetBoxIdx].classList.add('selected');
+        }
+        const lineBoxes = document.querySelectorAll('#line-color-options .color-box');
+        if (lineBoxes.length > targetBoxIdx) {
+            lineBoxes.forEach(b => b.classList.remove('selected'));
+            lineBoxes[targetBoxIdx].classList.add('selected');
+        }
+        const polyBoxes = document.querySelectorAll('#polygon-color-options .color-box');
+        if (polyBoxes.length > targetBoxIdx) {
+            polyBoxes.forEach(b => b.classList.remove('selected'));
+            polyBoxes[targetBoxIdx].classList.add('selected');
+        }
         
         // Butonun yazısını güncelle
         const toolColorBtn = document.getElementById('btn-tool-color');
@@ -9252,6 +9286,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tahtaColors.style.display = 'none';
                 tahtaPatterns.classList.remove('hidden');
                 tahtaPatterns.style.display = 'flex';
+                window.applyZemin(currentColor, currentPattern);
             });
         }
     });
@@ -9272,5 +9307,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     window.applyZemin(currentColor, currentPattern);
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTahtaMotoru);
+} else {
+    initTahtaMotoru();
+}
 

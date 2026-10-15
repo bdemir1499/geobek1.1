@@ -1,4 +1,4 @@
-﻿/* Tüm butonlar için ortak sevimli yazı stili */
+/* Tüm butonlar için ortak sevimli yazı stili */
 .tool-button, .tool-button-sub, #oyunlar-options div, button {
     font-family: 'Fredoka', sans-serif !important;
     font-weight: 600;
@@ -55,6 +55,11 @@ html, body {
     color: #cdd6f4; 
     background-image: radial-gradient(rgba(205, 214, 244, 0.15) 2px, transparent 2px);
     background-size: 30px 30px;
+}
+
+body.theme-krem {
+    background-color: #f9f9f9 !important;
+    color: #1e1e2e !important;
 }
 
 /* =========================================

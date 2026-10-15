@@ -1,4 +1,4 @@
-﻿// --- ruler.js (Evrensel Pointer ile Zıplamayan Versiyon) ---
+// --- ruler.js (Evrensel Pointer ile Zıplamayan Versiyon) ---
 
 window.RulerTool = {
     rulerElement: null,
@@ -415,7 +415,7 @@ window.RulerTool = {
         this.drawCtx.beginPath();
         this.drawCtx.moveTo(0, 4); 
         this.drawCtx.lineTo(handleX, 4); 
-        this.drawCtx.strokeStyle = '#FFFFFF'; 
+        this.drawCtx.strokeStyle = window.isToolThemeBlack ? '#000000' : (window.currentLineColor || '#FFFFFF'); 
         this.drawCtx.lineWidth = 4; 
         this.drawCtx.stroke();
 // 👇👇👇 İŞTE CANLI YAYIN KANCASI BURADA (En Sonda) 👇👇👇
@@ -483,7 +483,7 @@ window.RulerTool = {
                 type: 'straightLine', 
                 p1: p1,
                 p2: p2,
-                color: window.isToolThemeBlack ? '#000000' : window.currentLineColor, 
+                color: window.isToolThemeBlack ? '#000000' : (window.currentLineColor || '#FFFFFF'), 
                 width: 4,
                 lengthLabel: cmText, 
                 lengthLabelPos: midPoint,

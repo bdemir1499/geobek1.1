@@ -1,4 +1,4 @@
-﻿// --- cokgen.js (Çokgen Aracı Mantığı) ---
+// --- cokgen.js (Çokgen Aracı Mantığı) ---
 
 window.PolygonTool = {
     // --- TEMEL DURUM ---
@@ -65,7 +65,7 @@ window.PolygonTool = {
         window.tempPolygonData = {
             center: null, // <-- KRİTİK DÜZELTME: 'pos' DEĞİL, 'null'
             type: type,
-            color: window.currentLineColor,
+            color: window.currentLineColor || (window.isToolThemeBlack ? '#000000' : '#FFFFFF'),
         };
     },
     
@@ -102,7 +102,7 @@ window.PolygonTool = {
                 center: centerOnCanvas,
                 radius: radius, 
                 rotation: rotation, 
-                color: window.currentLineColor, // <-- KRİTİK EKLENTİ (Renk)
+                color: window.currentLineColor || (window.isToolThemeBlack ? '#000000' : '#FFFFFF'), // <-- KRİTİK EKLENTİ (Renk)
                 width: 4, // <-- KRİTİK EKLENTİ (Kalınlık)
                 fillColor: 'rgba(0, 0, 0, 0.2)', 
                 label: centerLabel
@@ -146,7 +146,7 @@ window.PolygonTool = {
                 radius: radius, 
                 startAngle: 0,
                 endAngle: 359.99, 
-                color: window.currentLineColor, // <-- KRİTİK EKLENTİ (Renk)
+                color: window.currentLineColor || (window.isToolThemeBlack ? '#000000' : '#FFFFFF'), // <-- KRİTİK EKLENTİ (Renk)
                 width: 4, // <-- KRİTİK EKLENTİ (Kalınlık)
                 label: centerLabel
             });

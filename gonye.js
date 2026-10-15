@@ -1,4 +1,4 @@
-﻿// --- gonye.js (Zıplama Engelleyici Dondurulmuş Referans Sürümü) ---
+// --- gonye.js (Zıplama Engelleyici Dondurulmuş Referans Sürümü) ---
 
 window.GonyeTool = {
     gonyeElement: null,
@@ -383,7 +383,7 @@ window.GonyeTool = {
         this.drawCtx.beginPath();
         this.drawCtx.moveTo(4, this.state.height); 
         this.drawCtx.lineTo(4, endY_local); 
-        this.drawCtx.strokeStyle = '#FFFFFF'; 
+        this.drawCtx.strokeStyle = window.isToolThemeBlack ? '#000000' : (window.currentLineColor || '#FFFFFF'); 
         this.drawCtx.lineWidth = 4; 
         this.drawCtx.stroke();
 // 👇👇👇 CANLI YAYIN KANCASI 👇👇👇
@@ -450,7 +450,7 @@ window.GonyeTool = {
                 type: 'segment', 
                 p1, 
                 p2, 
-                color: window.isToolThemeBlack ? '#000000' : window.currentLineColor, 
+                color: window.isToolThemeBlack ? '#000000' : (window.currentLineColor || '#FFFFFF'), 
                 width: 4, 
                 label1, 
                 label2, 
